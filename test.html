@@ -1,27 +1,68 @@
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<title>Test CMP</title>
-<link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Questionnaire CMP A4P</title>
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <a class="brand" href="index.html">
+          <img src="assets/logo-a4p.png" alt="Logo Académie de Performances A4P" />
+          <div class="brand-text">
+            <small>Académie de Performances</small>
+            <strong>Questionnaire CMP</strong>
+          </div>
+        </a>
+        <nav class="nav-links">
+          <a href="index.html">Accueil</a>
+          <a href="resultats.html">Résultats</a>
+          <a href="hub.html">Hub A4P</a>
+        </nav>
+      </div>
+    </header>
 
-<header class="a4p-header">
-<img src="assets/logo-a4p.png" class="a4p-logo">
-</header>
+    <main class="container">
+      <section class="panel">
+        <h2>Informations du sportif</h2>
+        <div class="form-grid">
+          <div class="field">
+            <label for="prenom">Prénom</label>
+            <input id="prenom" type="text" placeholder="Prénom" />
+          </div>
+          <div class="field">
+            <label for="nom">Nom</label>
+            <input id="nom" type="text" placeholder="Nom" />
+          </div>
+          <div class="field">
+            <label for="club">Club / structure</label>
+            <input id="club" type="text" placeholder="Club" />
+          </div>
+        </div>
+        <div class="progress-shell">
+          <div class="progress-bar"><div class="progress-fill"></div></div>
+          <div id="progress-text">0 / 16 questions répondues</div>
+        </div>
+      </section>
 
-<div class="container">
+      <section id="question-card" class="panel"></section>
 
-<div class="card">
-<h1>Questionnaire CMP</h1>
-<p>(Version démo du pack avec logo intégré)</p>
+      <div class="test-actions">
+        <button id="btn-prev" class="btn secondary" type="button">Question précédente</button>
+        <button id="btn-next" class="btn" type="button">Question suivante</button>
+        <button id="btn-finish" class="btn" type="button" hidden>Voir mon diagnostic CMP</button>
+      </div>
+    </main>
+  </div>
 
-<a href="resultats.html" class="btn">Voir un exemple de résultat</a>
-</div>
-
-</div>
-
+  <script src="js/questions.js"></script>
+  <script src="js/calc.js"></script>
+  <script src="js/profiles.js"></script>
+  <script src="js/interpret.js"></script>
+  <script src="js/hub-export.js"></script>
+  <script src="js/test.js"></script>
 </body>
 </html>

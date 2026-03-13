@@ -3,54 +3,34 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hub local A4P</title>
+  <title>Hub A4P</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-  <main class="page">
+  <div class="app-shell">
     <header class="topbar">
-      <a class="text-link" href="index.html">← Retour accueil</a>
-      <a class="text-link" href="test.html">Aller au test</a>
+      <div class="topbar-inner">
+        <a class="brand" href="index.html">
+          <img src="assets/logo-a4p.png" alt="Logo Académie de Performances A4P" />
+          <div class="brand-text">
+            <small>Académie de Performances</small>
+            <strong>Hub A4P</strong>
+          </div>
+        </a>
+        <nav class="nav-links">
+          <a href="index.html">Accueil</a>
+          <a href="test.html">Questionnaire</a>
+          <a href="resultats.html">Résultats</a>
+        </nav>
+      </div>
     </header>
 
-    <section class="card card-hero compact">
-      <p class="eyebrow">Hub diagnostic A4P</p>
-      <h1>Prévisualisation locale</h1>
-      <p class="lead">Cette page montre ce que le CMP envoie dans <code>localStorage</code> pour le hub A4P.</p>
-    </section>
-
-    <section class="card">
-      <h2>Synthèse hub</h2>
+    <main class="container">
       <div id="hub-root"></div>
-    </section>
-  </main>
+    </main>
+  </div>
 
-  <script>
-    function safeRead(key) {
-      try { return JSON.parse(localStorage.getItem(key)); } catch (e) { return null; }
-    }
-
-    const hub = safeRead('a4p_hub_results') || {};
-    const root = document.getElementById('hub-root');
-
-    if (!hub.CMP) {
-      root.innerHTML = '<p class="muted">Aucun résultat CMP n’a encore été envoyé au hub local.</p>';
-    } else {
-      const cmp = hub.CMP;
-      root.innerHTML = `
-        <div class="hub-card">
-          <div class="hub-head">
-            <div>
-              <p class="eyebrow">CMP</p>
-              <h3>${cmp.profil_nom}</h3>
-            </div>
-            <div class="score-badge">${cmp.score_global}/100</div>
-          </div>
-          <p>${cmp.summary}</p>
-          <pre class="json-box">${JSON.stringify(hub, null, 2)}</pre>
-        </div>
-      `;
-    }
-  </script>
+  <script src="js/questions.js"></script>
+  <script src="js/hub.js"></script>
 </body>
 </html>
