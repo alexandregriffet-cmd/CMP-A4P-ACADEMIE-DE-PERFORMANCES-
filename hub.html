@@ -3,34 +3,27 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hub A4P</title>
+  <title>Hub local A4P</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-  <div class="app-shell">
-    <header class="topbar">
-      <div class="topbar-inner">
-        <a class="brand" href="index.html">
-          <img src="assets/logo-a4p.png" alt="Logo Académie de Performances A4P" />
-          <div class="brand-text">
-            <small>Académie de Performances</small>
-            <strong>Hub A4P</strong>
-          </div>
-        </a>
-        <nav class="nav-links">
-          <a href="index.html">Accueil</a>
-          <a href="test.html">Questionnaire</a>
-          <a href="resultats.html">Résultats</a>
-        </nav>
-      </div>
-    </header>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <a class="back-link" href="index.html">← Retour accueil</a>
+      <img src="assets/logo-a4p.png" alt="A4P" class="topbar-logo" />
+    </div>
+  </header>
 
-    <main class="container">
-      <div id="hub-root"></div>
-    </main>
-  </div>
+  <main class="container page-stack">
+    <section class="card">
+      <p class="eyebrow">Hub diagnostic A4P</p>
+      <h1>Résultats synchronisés</h1>
+      <p class="muted">Cette page affiche les données CMP actuellement enregistrées dans le navigateur.</p>
+    </section>
 
-  <script src="js/questions.js"></script>
+    <div id="hub-root"></div>
+  </main>
+
   <script src="js/hub.js"></script>
 </body>
 </html>

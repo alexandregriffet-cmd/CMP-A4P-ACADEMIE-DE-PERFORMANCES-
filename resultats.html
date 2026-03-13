@@ -7,35 +7,21 @@
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-  <div class="app-shell">
-    <header class="topbar">
-      <div class="topbar-inner">
-        <a class="brand" href="index.html">
-          <img src="assets/logo-a4p.png" alt="Logo Académie de Performances A4P" />
-          <div class="brand-text">
-            <small>Académie de Performances</small>
-            <strong>Résultats CMP</strong>
-          </div>
-        </a>
-        <nav class="nav-links">
-          <a href="index.html">Accueil</a>
-          <a href="test.html">Questionnaire</a>
-          <a href="hub.html">Hub A4P</a>
-        </nav>
-      </div>
-    </header>
+  <header class="topbar">
+    <div class="container topbar-inner">
+      <a class="back-link" href="test.html">← Retour questionnaire</a>
+      <img src="assets/logo-a4p.png" alt="A4P" class="topbar-logo" />
+    </div>
+  </header>
 
-    <main class="container">
-      <div id="cmp-report"></div>
-      <div class="actions">
-        <a class="btn secondary" href="test.html">Repasser le questionnaire</a>
-        <button id="btn-export-json" class="btn" type="button">Exporter le diagnostic JSON</button>
-        <a class="btn secondary" href="hub.html">Ouvrir le hub A4P</a>
-      </div>
-    </main>
-  </div>
+  <main class="container page-stack">
+    <div id="result-root"></div>
+    <div class="button-row center-row">
+      <a class="btn btn-secondary" href="test.html">Repasser le questionnaire</a>
+      <a class="btn btn-primary" href="hub.html">Ouvrir le hub A4P</a>
+    </div>
+  </main>
 
-  <script src="js/questions.js"></script>
   <script src="js/resultats.js"></script>
 </body>
 </html>
