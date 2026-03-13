@@ -1,0 +1,49 @@
+
+body{
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+margin:0;
+background:#f4f6fb;
+color:#1a1a1a;
+}
+
+.a4p-header{
+background:#1d2f4f;
+padding:20px;
+text-align:center;
+color:white;
+}
+
+.a4p-logo{
+height:70px;
+display:block;
+margin:auto;
+}
+
+.container{
+max-width:900px;
+margin:auto;
+padding:40px 20px;
+}
+
+h1{
+font-size:42px;
+margin-bottom:10px;
+}
+
+.card{
+background:white;
+padding:30px;
+border-radius:12px;
+box-shadow:0 10px 30px rgba(0,0,0,0.08);
+margin-bottom:30px;
+}
+
+.btn{
+display:inline-block;
+padding:14px 26px;
+background:#243b63;
+color:white;
+border-radius:8px;
+text-decoration:none;
+margin-top:20px;
+}
