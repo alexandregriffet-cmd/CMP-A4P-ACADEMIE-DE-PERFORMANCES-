@@ -1,40 +1,36 @@
-window.CMPCalc = (() => {
-  function normalizeLikert(value, reverse = false) {
-    const v = reverse ? 6 - value : value;
-    return Math.round(((v - 1) / 4) * 100);
-  }
+function normalizeLikert(value, reverse = false) {
+  const v = reverse ? 6 - Number(value) : Number(value);
+  return Math.round(((v - 1) / 4) * 100);
+}
 
-  function average(values) {
-    if (!values.length) return 0;
-    return Math.round(values.reduce((a, b) => a + b, 0) / values.length);
-  }
+function average(arr) {
+  if (!arr.length) return 0;
+  return Math.round(arr.reduce((sum, item) => sum + item, 0) / arr.length);
+}
 
-  function computeScores(questions, answers) {
-    const buckets = {
-      confiance: [],
-      regulation: [],
-      engagement: [],
-      stabilite: []
-    };
+function computeCMPScores(questions, answers) {
+  const buckets = {
+    confiance: [],
+    regulation: [],
+    engagement: [],
+    stabilite: []
+  };
 
-    questions.forEach((q) => {
-      const raw = Number(answers[q.id]);
-      if (!raw) return;
-      buckets[q.dimension].push(normalizeLikert(raw, !!q.reverse));
-    });
+  questions.forEach((question) => {
+    const raw = answers[question.id];
+    if (raw == null) return;
+    buckets[question.dimension].push(normalizeLikert(raw, !!question.reverse));
+  });
 
-    const dimensions = {
-      confiance: average(buckets.confiance),
-      regulation: average(buckets.regulation),
-      engagement: average(buckets.engagement),
-      stabilite: average(buckets.stabilite)
-    };
+  const dimensions = {
+    confiance: average(buckets.confiance),
+    regulation: average(buckets.regulation),
+    engagement: average(buckets.engagement),
+    stabilite: average(buckets.stabilite)
+  };
 
-    return {
-      dimensions,
-      score_global: average(Object.values(dimensions))
-    };
-  }
-
-  return { normalizeLikert, computeScores };
-})();
+  return {
+    dimensions,
+    score_global: average(Object.values(dimensions))
+  };
+}

@@ -1,196 +1,185 @@
-window.CMPResults = (() => {
-  function getReport() {
-    try {
-      return JSON.parse(localStorage.getItem('cmp_result'));
-    } catch (_) {
-      return null;
-    }
+(function () {
+  const root = document.getElementById('result-root');
+  if (!root) return;
+
+  let report = null;
+  try {
+    report = JSON.parse(localStorage.getItem('cmp_result')) || null;
+  } catch (error) {
+    report = null;
+  }
+
+  if (!report) {
+    root.innerHTML = `
+      <section class="card empty-state">
+        <p class="eyebrow">Résultat introuvable</p>
+        <h1>Aucun diagnostic CMP disponible</h1>
+        <p class="muted">Complète d’abord le questionnaire pour générer le rapport et le radar.</p>
+        <div class="button-row center-row">
+          <a class="btn btn-primary" href="test.html">Accéder au questionnaire</a>
+        </div>
+      </section>
+    `;
+    return;
+  }
+
+  const identityLine = [report.identity?.prenom, report.identity?.nom].filter(Boolean).join(' ');
+  const clubLine = report.identity?.club ? ` · ${report.identity.club}` : '';
+
+  root.innerHTML = `
+    <section class="card">
+      <p class="eyebrow">Diagnostic CMP A4P</p>
+      <h1>${report.profil_nom}</h1>
+      <p class="lead">${report.resume_court}</p>
+      <div class="meta-grid">
+        <span class="meta-pill">Score global : ${report.score_global}/100</span>
+        <span class="meta-pill">Code profil : ${report.profil_code}</span>
+        ${identityLine ? `<span class="meta-pill">${identityLine}${clubLine}</span>` : ''}
+      </div>
+    </section>
+
+    <section class="two-col">
+      <section class="card">
+        <h2 class="panel-title">Radar des 4 dimensions</h2>
+        <div class="radar-wrap"><canvas id="radar-chart" width="420" height="420"></canvas></div>
+      </section>
+
+      <section class="card">
+        <h2 class="panel-title">Scores par dimension</h2>
+        <div class="score-grid">
+          ${renderScoreRow('confiance', report.dimensions.confiance)}
+          ${renderScoreRow('regulation', report.dimensions.regulation)}
+          ${renderScoreRow('engagement', report.dimensions.engagement)}
+          ${renderScoreRow('stabilite', report.dimensions.stabilite)}
+        </div>
+      </section>
+    </section>
+
+    <section class="card"><h2>Lecture synthétique</h2><p class="muted">${report.lecture_synthetique}</p></section>
+    <section class="card"><h2>Fonctionnement mental dominant</h2><p class="muted">${report.fonctionnement_mental}</p></section>
+    <section class="card"><h2>Comportement en situation de performance</h2><p class="muted">${report.comportement_performance}</p></section>
+    <section class="card"><h2>Réaction sous pression</h2><p class="muted">${report.reaction_pression}</p></section>
+
+    <section class="two-col">
+      <section class="card"><h2>Forces mentales</h2>${renderList(report.forces)}</section>
+      <section class="card"><h2>Points de vigilance</h2>${renderList(report.vigilances)}</section>
+    </section>
+
+    <section class="card"><h2>Leviers de progression</h2>${renderList(report.leviers)}</section>
+
+    <section class="card">
+      <h2>Donnée hub</h2>
+      <pre class="code-block">${escapeHtml(JSON.stringify({
+        test: report.test,
+        profil_code: report.profil_code,
+        profil_nom: report.profil_nom,
+        score_global: report.score_global,
+        dimensions: report.dimensions,
+        summary: report.resume_court
+      }, null, 2))}</pre>
+    </section>
+  `;
+
+  drawRadar('radar-chart', report.dimensions);
+
+  function renderScoreRow(label, value) {
+    return `
+      <div class="score-row">
+        <div class="score-label">${label}</div>
+        <div class="score-track"><div class="score-fill" style="width:${value}%"></div></div>
+        <div class="score-value">${value}</div>
+      </div>
+    `;
   }
 
   function renderList(items) {
-    return items.map(item => `<li>${item}</li>`).join('');
+    return `<ul class="nice-list">${items.map((item) => `<li>${item}</li>`).join('')}</ul>`;
   }
 
-  function renderDimensionCards(dimensions) {
-    return dimensions.map(item => `
-      <div class="metric-card">
-        <div class="metric-label">${item.label}</div>
-        <div class="metric-value">${item.score}</div>
-        <div class="metric-level">${item.level}</div>
-      </div>
-    `).join('');
+  function escapeHtml(str) {
+    return str.replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
   }
 
-  function drawRadar(canvas, dimensions) {
+  function drawRadar(canvasId, dimensions) {
+    const canvas = document.getElementById(canvasId);
     if (!canvas) return;
+
     const ctx = canvas.getContext('2d');
-    const labels = dimensions.map(item => item.label);
-    const values = dimensions.map(item => item.score / 100);
+    const labels = [
+      ['Confiance', dimensions.confiance],
+      ['Régulation', dimensions.regulation],
+      ['Engagement', dimensions.engagement],
+      ['Stabilité', dimensions.stabilite]
+    ];
+
     const w = canvas.width;
     const h = canvas.height;
     const cx = w / 2;
     const cy = h / 2;
-    const radius = Math.min(w, h) * 0.32;
+    const maxR = 135;
+    const levels = 5;
 
     ctx.clearRect(0, 0, w, h);
     ctx.lineWidth = 1;
-    ctx.strokeStyle = 'rgba(30,47,79,0.18)';
-    ctx.fillStyle = '#1e2f4f';
-    ctx.font = '14px Arial';
 
-    for (let level = 1; level <= 5; level++) {
+    for (let level = 1; level <= levels; level++) {
+      const r = (maxR / levels) * level;
       ctx.beginPath();
-      labels.forEach((_, i) => {
-        const angle = (-Math.PI / 2) + (i * 2 * Math.PI / labels.length);
-        const x = cx + Math.cos(angle) * radius * (level / 5);
-        const y = cy + Math.sin(angle) * radius * (level / 5);
-        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      labels.forEach((_, index) => {
+        const angle = (-Math.PI / 2) + (Math.PI * 2 * index / labels.length);
+        const x = cx + Math.cos(angle) * r;
+        const y = cy + Math.sin(angle) * r;
+        if (index === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
       });
       ctx.closePath();
+      ctx.strokeStyle = 'rgba(31,53,96,0.12)';
       ctx.stroke();
     }
 
-    labels.forEach((label, i) => {
-      const angle = (-Math.PI / 2) + (i * 2 * Math.PI / labels.length);
-      const x = cx + Math.cos(angle) * radius;
-      const y = cy + Math.sin(angle) * radius;
+    labels.forEach(([label], index) => {
+      const angle = (-Math.PI / 2) + (Math.PI * 2 * index / labels.length);
+      const x = cx + Math.cos(angle) * maxR;
+      const y = cy + Math.sin(angle) * maxR;
+
       ctx.beginPath();
       ctx.moveTo(cx, cy);
       ctx.lineTo(x, y);
+      ctx.strokeStyle = 'rgba(31,53,96,0.14)';
       ctx.stroke();
 
-      const lx = cx + Math.cos(angle) * (radius + 28);
-      const ly = cy + Math.sin(angle) * (radius + 28);
-      ctx.textAlign = lx < cx - 10 ? 'right' : lx > cx + 10 ? 'left' : 'center';
-      ctx.textBaseline = ly < cy - 10 ? 'bottom' : ly > cy + 10 ? 'top' : 'middle';
-      ctx.fillText(label, lx, ly);
+      const labelX = cx + Math.cos(angle) * (maxR + 28);
+      const labelY = cy + Math.sin(angle) * (maxR + 28);
+      ctx.fillStyle = '#1f3560';
+      ctx.font = '700 14px Inter, Arial, sans-serif';
+      ctx.textAlign = Math.abs(Math.cos(angle)) < 0.2 ? 'center' : (Math.cos(angle) > 0 ? 'left' : 'right');
+      ctx.textBaseline = Math.abs(Math.sin(angle)) < 0.2 ? 'middle' : (Math.sin(angle) > 0 ? 'top' : 'bottom');
+      ctx.fillText(label, labelX, labelY);
     });
 
     ctx.beginPath();
-    values.forEach((value, i) => {
-      const angle = (-Math.PI / 2) + (i * 2 * Math.PI / labels.length);
-      const x = cx + Math.cos(angle) * radius * value;
-      const y = cy + Math.sin(angle) * radius * value;
-      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    labels.forEach(([_, value], index) => {
+      const angle = (-Math.PI / 2) + (Math.PI * 2 * index / labels.length);
+      const r = (value / 100) * maxR;
+      const x = cx + Math.cos(angle) * r;
+      const y = cy + Math.sin(angle) * r;
+      if (index === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
     });
     ctx.closePath();
-    ctx.fillStyle = 'rgba(56,189,248,0.22)';
-    ctx.strokeStyle = '#38bdf8';
+    ctx.fillStyle = 'rgba(47,77,133,0.24)';
+    ctx.strokeStyle = '#2f4d85';
     ctx.lineWidth = 3;
     ctx.fill();
     ctx.stroke();
 
-    values.forEach((value, i) => {
-      const angle = (-Math.PI / 2) + (i * 2 * Math.PI / labels.length);
-      const x = cx + Math.cos(angle) * radius * value;
-      const y = cy + Math.sin(angle) * radius * value;
+    labels.forEach(([_, value], index) => {
+      const angle = (-Math.PI / 2) + (Math.PI * 2 * index / labels.length);
+      const r = (value / 100) * maxR;
+      const x = cx + Math.cos(angle) * r;
+      const y = cy + Math.sin(angle) * r;
       ctx.beginPath();
-      ctx.arc(x, y, 4, 0, Math.PI * 2);
-      ctx.fillStyle = '#1e2f4f';
+      ctx.arc(x, y, 5, 0, Math.PI * 2);
+      ctx.fillStyle = '#1f3560';
       ctx.fill();
     });
   }
-
-  function exportJson(report) {
-    const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `cmp-a4p-${(report.identity.nom || 'resultat').toLowerCase().replace(/\s+/g, '-')}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
-  }
-
-  function render() {
-    const report = getReport();
-    const root = document.getElementById('cmp-report');
-    if (!root) return;
-
-    if (!report) {
-      root.innerHTML = '<section class="panel"><h1>Résultat introuvable</h1><p>Aucun résultat CMP n’a été trouvé dans cette session.</p><p><a class="btn secondary" href="test.html">Revenir au questionnaire</a></p></section>';
-      return;
-    }
-
-    const name = [report.identity?.prenom, report.identity?.nom].filter(Boolean).join(' ');
-
-    root.innerHTML = `
-      <section class="hero panel glass">
-        <div>
-          <p class="eyebrow">Diagnostic CMP A4P</p>
-          <h1>${report.profil_nom}</h1>
-          <p class="lead">${report.resume_court}</p>
-          <div class="hero-meta">
-            <span>Score global <strong>${report.score_global}/100</strong></span>
-            <span>Code <strong>${report.profil_code}</strong></span>
-            ${name ? `<span>Sportif <strong>${name}</strong></span>` : ''}
-          </div>
-        </div>
-        <div class="score-badge">
-          <span>${report.score_global}</span>
-          <small>Indice global</small>
-        </div>
-      </section>
-
-      <section class="grid-two">
-        <div class="panel">
-          <h2>Radar des 4 dimensions</h2>
-          <canvas id="radar" width="500" height="420" aria-label="Radar CMP"></canvas>
-        </div>
-        <div class="panel">
-          <h2>Scores par dimension</h2>
-          <div class="metrics-grid">${renderDimensionCards(report.dimension_insights)}</div>
-        </div>
-      </section>
-
-      <section class="panel">
-        <h2>Lecture synthétique</h2>
-        <p>${report.lecture_synthetique}</p>
-      </section>
-
-      <section class="grid-two">
-        <div class="panel">
-          <h2>Fonctionnement mental</h2>
-          <p>${report.fonctionnement_mental}</p>
-        </div>
-        <div class="panel">
-          <h2>Réaction sous pression</h2>
-          <p>${report.reaction_pression}</p>
-        </div>
-      </section>
-
-      <section class="panel">
-        <h2>Comportement en situation de performance</h2>
-        <p>${report.comportement_performance}</p>
-      </section>
-
-      <section class="grid-two">
-        <div class="panel">
-          <h2>Forces mentales</h2>
-          <ul class="styled-list">${renderList(report.forces)}</ul>
-        </div>
-        <div class="panel">
-          <h2>Points de vigilance</h2>
-          <ul class="styled-list">${renderList(report.vigilances)}</ul>
-        </div>
-      </section>
-
-      <section class="panel">
-        <h2>Leviers de progression</h2>
-        <ul class="styled-list">${renderList(report.leviers)}</ul>
-      </section>
-    `;
-
-    const radar = document.getElementById('radar');
-    drawRadar(radar, report.dimension_insights);
-
-    document.getElementById('btn-export-json')?.addEventListener('click', () => exportJson(report));
-  }
-
-  return { render };
 })();
-
-document.addEventListener('DOMContentLoaded', () => {
-  if (document.getElementById('cmp-report')) {
-    window.CMPResults.render();
-  }
-});

@@ -1,57 +1,48 @@
-document.addEventListener('DOMContentLoaded', () => {
+(function () {
   const root = document.getElementById('hub-root');
   if (!root) return;
-  let hub = {};
+
+  let hub = null;
   try {
-    hub = JSON.parse(localStorage.getItem('a4p_hub_results')) || {};
-  } catch (_) {
-    hub = {};
+    hub = JSON.parse(localStorage.getItem('a4p_hub_results')) || null;
+  } catch (error) {
+    hub = null;
   }
 
-  const cmp = hub.CMP;
-  if (!cmp) {
+  if (!hub || !hub.CMP) {
     root.innerHTML = `
-      <section class="panel">
-        <h1>Hub A4P</h1>
-        <p>Aucun résultat CMP n’a encore été transmis au hub.</p>
-        <a class="btn" href="test.html">Passer le questionnaire</a>
+      <section class="card empty-state">
+        <h2>Aucun résultat CMP enregistré</h2>
+        <p class="muted">Passe d’abord le questionnaire pour alimenter le hub local.</p>
+        <div class="button-row center-row">
+          <a class="btn btn-primary" href="test.html">Accéder au questionnaire</a>
+        </div>
       </section>
     `;
     return;
   }
 
-  const dims = Object.entries(cmp.dimensions || {}).map(([k, v]) => `
-    <div class="metric-card">
-      <div class="metric-label">${window.CMP_DIMENSIONS[k] || k}</div>
-      <div class="metric-value">${v}</div>
-    </div>
-  `).join('');
+  const cmp = hub.CMP;
+  const identity = [cmp.identity?.prenom, cmp.identity?.nom].filter(Boolean).join(' ');
 
   root.innerHTML = `
-    <section class="hero panel glass">
-      <div>
-        <p class="eyebrow">Hub diagnostic A4P</p>
-        <h1>${cmp.profil_nom}</h1>
-        <p class="lead">${cmp.summary}</p>
+    <section class="card">
+      <h2>Module CMP</h2>
+      <div class="meta-grid">
+        <span class="meta-pill">Profil : ${cmp.profil_nom}</span>
+        <span class="meta-pill">Score global : ${cmp.score_global}/100</span>
+        ${identity ? `<span class="meta-pill">${identity}</span>` : ''}
       </div>
-      <div class="score-badge"><span>${cmp.score_global}</span><small>Score CMP</small></div>
+      <p class="muted" style="margin-top:16px;">${cmp.summary}</p>
     </section>
 
-    <section class="panel">
-      <h2>Dimensions remontées</h2>
-      <div class="metrics-grid">${dims}</div>
-    </section>
-
-    <section class="panel">
-      <h2>Payload actuel du hub</h2>
+    <section class="card">
+      <h2>Données JSON</h2>
       <pre class="code-block">${escapeHtml(JSON.stringify(hub, null, 2))}</pre>
     </section>
   `;
-});
 
-function escapeHtml(str) {
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
-}
+  function escapeHtml(str) {
+    return str.replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
+  }
+})();
