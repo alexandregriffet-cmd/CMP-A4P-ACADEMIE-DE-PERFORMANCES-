@@ -1,19 +1,37 @@
-# CMP A4P — Pack GitHub statique
+# Hub A4P V5
 
-## Mise en ligne
-1. Créer un dépôt GitHub vide.
-2. Déposer tous les fichiers du dossier à la racine du dépôt.
-3. Activer GitHub Pages sur la branche principale.
-4. Ouvrir `index.html`.
+## Contenu
+- Menu SaaS propre pour PMP / CMP / Équilibre
+- Score global mental calculé à partir des modules synchronisés
+- Radar global combiné sur 4 axes : confiance, régulation, engagement, stabilité
+- Dashboard club préconfiguré pour une future version SaaS
+- Vue JSON repliable
 
-## Flux
-- `index.html` : accueil
-- `test.html` : questionnaire dynamique 16 items
-- `resultats.html` : diagnostic complet + radar
-- `hub.html` : lecture des données synchronisées dans le navigateur
+## Mise à jour des liens modules
+Éditez `js/config.js` :
+- `pmp`
+- `cmp`
+- `epe`
 
-## Stockage navigateur
-- `cmp_answers`
-- `cmp_identity`
-- `cmp_result`
-- `a4p_hub_results`
+## Clé de stockage
+Le hub lit les données dans :
+- `localStorage['a4p_hub_results']`
+
+## Structure attendue par module
+Exemple CMP :
+```json
+{
+  "CMP": {
+    "test": "CMP",
+    "profil_nom": "Mobilisation forte mais régulation fluctuante",
+    "score_global": 64,
+    "dimensions": {
+      "confiance": 56,
+      "regulation": 44,
+      "engagement": 75,
+      "stabilite": 81
+    },
+    "summary": "..."
+  }
+}
+```

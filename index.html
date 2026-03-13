@@ -3,63 +3,165 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CMP A4P — Académie de Performances</title>
+  <title>Hub A4P V5 — Diagnostic mental</title>
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-  <header class="topbar topbar-home">
-    <div class="container topbar-inner">
-      <div class="brand-inline">
-        <img src="assets/logo-a4p.png" alt="Académie de Performances" class="topbar-logo topbar-logo-large" />
+  <div class="page-shell">
+    <header class="topbar">
+      <div class="brand-row">
+        <img src="assets/logo-a4p.png" alt="Académie de Performances A4P" class="brand-logo" />
         <div>
-          <p class="eyebrow">Académie de Performances</p>
-          <strong class="brand-title">CMP A4P</strong>
+          <p class="eyebrow">Hub Diagnostic A4P</p>
+          <h1>Plateforme de diagnostic mental</h1>
+          <p class="subtext">Navigation centralisée PMP / CMP / Équilibre avec synthèse globale, radar combiné et pré-configuration club.</p>
         </div>
       </div>
-      <a class="btn btn-secondary btn-small" href="hub.html">Hub A4P</a>
-    </div>
-  </header>
+      <div class="top-actions">
+        <button class="btn btn-secondary" id="btn-refresh">Actualiser les données</button>
+        <button class="btn btn-ghost" id="btn-reset">Réinitialiser le hub</button>
+      </div>
+    </header>
 
-  <main class="container page-stack page-home">
-    <section class="hero-card card">
-      <div class="hero-grid">
-        <div class="hero-content">
-          <p class="eyebrow">Diagnostic mental A4P</p>
-          <h1>Construire un diagnostic CMP clair, premium et immédiatement exploitable.</h1>
-          <p class="lead muted-strong">Le CMP A4P évalue 4 dimensions décisives de la performance mentale : la confiance, la régulation, l’engagement et la stabilité. À l’issue du questionnaire, le sportif obtient un profil interprété, un radar visuel et une synthèse directement exploitable.</p>
-          <div class="button-row">
-            <a class="btn btn-primary" href="test.html">Démarrer le questionnaire</a>
-            <a class="btn btn-secondary" href="hub.html">Voir le hub</a>
+    <main class="layout">
+      <section class="card hero-card">
+        <div class="hero-copy">
+          <p class="eyebrow">A4P • Vue d'ensemble</p>
+          <h2>Un cockpit unique pour piloter l’ensemble du diagnostic mental</h2>
+          <p>Le hub centralise les résultats des modules actifs, calcule un score global mental, agrège les sous-indicateurs disponibles et prépare la bascule vers une version club / équipe.</p>
+          <div class="hero-badges">
+            <span class="pill">Menu SaaS propre</span>
+            <span class="pill">Radar global combiné</span>
+            <span class="pill">Dashboard club</span>
           </div>
         </div>
-        <div class="hero-brand-panel">
-          <img src="assets/logo-a4p.png" alt="Académie de Performances" class="hero-panel-logo" />
+        <div class="score-panel">
+          <p class="score-label">Score global mental</p>
+          <div class="score-ring">
+            <span id="global-score">—</span>
+          </div>
+          <p class="score-meta" id="global-score-meta">Aucune donnée synchronisée pour le moment.</p>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <section class="stats-grid">
-      <article class="card stat-card"><span class="stat-number">4</span><span class="stat-label">dimensions évaluées</span></article>
-      <article class="card stat-card"><span class="stat-number">16</span><span class="stat-label">items</span></article>
-      <article class="card stat-card"><span class="stat-number">5</span><span class="stat-label">niveaux de réponse</span></article>
-      <article class="card stat-card"><span class="stat-number">1</span><span class="stat-label">synthèse professionnelle</span></article>
-    </section>
+      <section class="grid two-up">
+        <article class="card">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Navigation modules</p>
+              <h3>Menu SaaS</h3>
+            </div>
+          </div>
+          <div class="module-grid">
+            <a class="module-card" id="link-pmp" href="#" target="_blank" rel="noopener noreferrer">
+              <div>
+                <p class="module-kicker">Module 1</p>
+                <h4>Profil Mental (PMP)</h4>
+                <p>Accéder au module, au test actif ou à la synthèse PMP.</p>
+              </div>
+              <span class="module-status" id="status-pmp">En attente</span>
+            </a>
 
-    <section class="card">
-      <h2>Ce que tu obtiens</h2>
-      <div class="grid-2">
-        <ul class="nice-list">
-          <li>Un score global sur 100</li>
-          <li>4 scores détaillés par dimension</li>
-          <li>Un profil CMP automatique</li>
-        </ul>
-        <ul class="nice-list">
-          <li>Une synthèse professionnelle</li>
-          <li>Un radar visuel des dimensions</li>
-          <li>Une remontée vers le hub A4P</li>
-        </ul>
-      </div>
-    </section>
-  </main>
+            <a class="module-card is-active" id="link-cmp" href="#" target="_blank" rel="noopener noreferrer">
+              <div>
+                <p class="module-kicker">Module 2</p>
+                <h4>Compétences Mentales (CMP)</h4>
+                <p>Accéder au module CMP, au questionnaire actif et à la synthèse connectée.</p>
+              </div>
+              <span class="module-status" id="status-cmp">En attente</span>
+            </a>
+
+            <a class="module-card" id="link-epe" href="#" target="_blank" rel="noopener noreferrer">
+              <div>
+                <p class="module-kicker">Module 3</p>
+                <h4>Équilibre Psycho-Émotionnel</h4>
+                <p>Accéder au module d’équilibre, aux résultats et aux indicateurs émotionnels.</p>
+              </div>
+              <span class="module-status" id="status-epe">En attente</span>
+            </a>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Synthèse centrale</p>
+              <h3>Radar global combiné</h3>
+            </div>
+          </div>
+          <div class="radar-wrap">
+            <canvas id="global-radar" width="420" height="340" aria-label="Radar global combiné"></canvas>
+          </div>
+          <div class="legend-list" id="legend-list"></div>
+        </article>
+      </section>
+
+      <section class="grid two-up">
+        <article class="card">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Résultats synchronisés</p>
+              <h3>Vue par module</h3>
+            </div>
+          </div>
+          <div id="module-results" class="stack"></div>
+        </article>
+
+        <article class="card">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Projection SaaS club</p>
+              <h3>Dashboard club</h3>
+            </div>
+          </div>
+          <div class="kpi-grid">
+            <div class="kpi-card">
+              <span class="kpi-label">Joueurs testés</span>
+              <strong id="club-tested">1</strong>
+              <small>Mode local démonstration</small>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-label">Score moyen mental</span>
+              <strong id="club-avg">—</strong>
+              <small>Moyenne des modules disponibles</small>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-label">Module le plus fort</span>
+              <strong id="club-best">—</strong>
+              <small>Sur les données synchronisées</small>
+            </div>
+            <div class="kpi-card">
+              <span class="kpi-label">Point de vigilance</span>
+              <strong id="club-watch">—</strong>
+              <small>Plus faible indicateur agrégé</small>
+            </div>
+          </div>
+          <div class="future-box">
+            <h4>Évolution future version club</h4>
+            <ul>
+              <li>Import multi-joueurs / cohortes</li>
+              <li>Comparaison postes, catégories, équipes</li>
+              <li>Export PDF et reporting coach</li>
+              <li>Historique longitudinal par saison</li>
+            </ul>
+          </div>
+        </article>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Données techniques</p>
+            <h3>JSON synchronisé du hub</h3>
+          </div>
+          <button class="btn btn-secondary" id="toggle-json">Afficher / masquer</button>
+        </div>
+        <pre id="json-view" class="json-view is-hidden"></pre>
+      </section>
+    </main>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/hub.js"></script>
 </body>
 </html>
