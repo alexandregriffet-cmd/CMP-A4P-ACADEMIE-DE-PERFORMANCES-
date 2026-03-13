@@ -7,52 +7,58 @@
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-  <header class="hero hero-home">
-    <div class="overlay"></div>
-    <div class="hero-inner container">
-      <img src="assets/logo-a4p.png" alt="Académie de Performances" class="hero-logo" />
-      <div class="hero-copy">
-        <p class="eyebrow">Diagnostic mental A4P</p>
-        <h1>Test CMP A4P</h1>
-        <p class="lead">Un questionnaire premium pour évaluer 4 dimensions clés du fonctionnement mental en performance : confiance, régulation, engagement et stabilité.</p>
-        <div class="button-row">
-          <a class="btn btn-primary" href="test.html">Commencer le questionnaire</a>
-          <a class="btn btn-secondary" href="hub.html">Voir le hub local</a>
+  <header class="topbar topbar-home">
+    <div class="container topbar-inner">
+      <div class="brand-inline">
+        <img src="assets/logo-a4p.png" alt="Académie de Performances" class="topbar-logo topbar-logo-large" />
+        <div>
+          <p class="eyebrow">Académie de Performances</p>
+          <strong class="brand-title">CMP A4P</strong>
         </div>
       </div>
+      <a class="btn btn-secondary btn-small" href="hub.html">Hub A4P</a>
     </div>
   </header>
 
-  <main class="container page-stack">
-    <section class="card">
-      <h2>Ce que tu obtiens</h2>
-      <div class="grid-2">
-        <div>
-          <ul class="nice-list">
-            <li>Un score global sur 100</li>
-            <li>4 scores détaillés par dimension</li>
-            <li>Un profil CMP automatique</li>
-          </ul>
+  <main class="container page-stack page-home">
+    <section class="hero-card card">
+      <div class="hero-grid">
+        <div class="hero-content">
+          <p class="eyebrow">Diagnostic mental A4P</p>
+          <h1>Construire un diagnostic CMP clair, premium et immédiatement exploitable.</h1>
+          <p class="lead muted-strong">Le CMP A4P évalue 4 dimensions décisives de la performance mentale : la confiance, la régulation, l’engagement et la stabilité. À l’issue du questionnaire, le sportif obtient un profil interprété, un radar visuel et une synthèse directement exploitable.</p>
+          <div class="button-row">
+            <a class="btn btn-primary" href="test.html">Démarrer le questionnaire</a>
+            <a class="btn btn-secondary" href="hub.html">Voir le hub</a>
+          </div>
         </div>
-        <div>
-          <ul class="nice-list">
-            <li>Une synthèse professionnelle</li>
-            <li>Un radar visuel des dimensions</li>
-            <li>Une remontée vers le hub A4P</li>
-          </ul>
+        <div class="hero-brand-panel">
+          <img src="assets/logo-a4p.png" alt="Académie de Performances" class="hero-panel-logo" />
         </div>
       </div>
     </section>
 
+    <section class="stats-grid">
+      <article class="card stat-card"><span class="stat-number">4</span><span class="stat-label">dimensions évaluées</span></article>
+      <article class="card stat-card"><span class="stat-number">16</span><span class="stat-label">items</span></article>
+      <article class="card stat-card"><span class="stat-number">5</span><span class="stat-label">niveaux de réponse</span></article>
+      <article class="card stat-card"><span class="stat-number">1</span><span class="stat-label">synthèse professionnelle</span></article>
+    </section>
+
     <section class="card">
-      <h2>Dimensions évaluées</h2>
-      <div class="chip-row">
-        <span class="chip">Confiance</span>
-        <span class="chip">Régulation</span>
-        <span class="chip">Engagement</span>
-        <span class="chip">Stabilité</span>
+      <h2>Ce que tu obtiens</h2>
+      <div class="grid-2">
+        <ul class="nice-list">
+          <li>Un score global sur 100</li>
+          <li>4 scores détaillés par dimension</li>
+          <li>Un profil CMP automatique</li>
+        </ul>
+        <ul class="nice-list">
+          <li>Une synthèse professionnelle</li>
+          <li>Un radar visuel des dimensions</li>
+          <li>Une remontée vers le hub A4P</li>
+        </ul>
       </div>
-      <p class="muted">Le questionnaire s’appuie sur 16 affirmations et une échelle de réponse en 5 points. Les résultats sont conservés dans le navigateur pour afficher le rapport et alimenter le hub local A4P.</p>
     </section>
   </main>
 </body>
