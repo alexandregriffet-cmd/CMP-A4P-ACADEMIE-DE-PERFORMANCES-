@@ -106,7 +106,101 @@
     return true;
   }
 
-  btnSubmit?.addEventListener('click', () => {
+  async function supabaseRequest(path, options = {}) {
+    const url = `${window.CMP_SUPABASE_URL}/rest/v1/${path}`;
+    const headers = {
+      apikey: window.CMP_SUPABASE_ANON_KEY,
+      Authorization: `Bearer ${window.CMP_SUPABASE_ANON_KEY}`,
+      'Content-Type': 'application/json',
+      ...(options.headers || {})
+    };
+
+    return fetch(url, {
+      ...options,
+      headers
+    });
+  }
+
+  async function saveCmpResultToSupabase(report) {
+    const token = new URLSearchParams(window.location.search).get('token') || '';
+
+    if (!token) {
+      return { ok: false, error: 'Token manquant dans l’URL' };
+    }
+
+    if (!window.CMP_SUPABASE_URL || !window.CMP_SUPABASE_ANON_KEY) {
+      return { ok: false, error: 'Configuration Supabase manquante dans js/config.js' };
+    }
+
+    const passationResponse = await supabaseRequest(
+      `passations?token=eq.${encodeURIComponent(token)}&select=id,player_id,token,module,status`,
+      { method: 'GET' }
+    );
+
+    if (!passationResponse.ok) {
+      const errorText = await passationResponse.text();
+      return { ok: false, error: `Lecture passation impossible : ${errorText}` };
+    }
+
+    const passationRows = await passationResponse.json();
+    const passation = Array.isArray(passationRows) ? passationRows[0] : null;
+
+    if (!passation) {
+      return { ok: false, error: 'Passation introuvable pour ce token' };
+    }
+
+    const payload = {
+      passation_id: passation.id,
+      player_id: passation.player_id || null,
+      token,
+      module: 'CMP',
+      firstname: report.identity?.prenom || '',
+      lastname: report.identity?.nom || '',
+      email: null,
+      club_structure: report.identity?.club || '',
+      profile_code: report.profil_code || '',
+      profile_label: report.profil_nom || '',
+      score_global: report.score_global ?? null,
+      confiance: report.dimensions?.confiance ?? null,
+      regulation: report.dimensions?.regulation ?? null,
+      engagement: report.dimensions?.engagement ?? null,
+      stabilite: report.dimensions?.stabilite ?? null,
+      raw_data: report
+    };
+
+    const insertResponse = await supabaseRequest('cmp_results', {
+      method: 'POST',
+      headers: {
+        Prefer: 'resolution=merge-duplicates,return=representation'
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!insertResponse.ok) {
+      const errorText = await insertResponse.text();
+      return { ok: false, error: `Insertion cmp_results impossible : ${errorText}` };
+    }
+
+    const updateResponse = await supabaseRequest(
+      `passations?id=eq.${encodeURIComponent(passation.id)}`,
+      {
+        method: 'PATCH',
+        headers: {
+          Prefer: 'return=representation'
+        },
+        body: JSON.stringify({ status: 'completed' })
+      }
+    );
+
+    if (!updateResponse.ok) {
+      const errorText = await updateResponse.text();
+      return { ok: false, error: `Mise à jour passation impossible : ${errorText}` };
+    }
+
+    return { ok: true };
+  }
+
+  btnSubmit?.addEventListener('click', async () => {
     saveIdentity();
     if (!validateForm()) return;
 
@@ -115,6 +209,14 @@
 
     localStorage.setItem('cmp_result', JSON.stringify(report));
     exportCMPToHub(report);
+
+    const saveResponse = await saveCmpResultToSupabase(report);
+
+    if (!saveResponse.ok) {
+      console.error(saveResponse.error);
+      alert(`Résultat affiché, mais sauvegarde plateforme impossible : ${saveResponse.error}`);
+    }
+
     window.location.href = 'resultats.html';
   });
 
