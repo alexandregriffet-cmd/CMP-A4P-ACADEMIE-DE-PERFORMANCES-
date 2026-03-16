@@ -1,27 +1,28 @@
 (function () {
   const STORAGE_ANSWERS = 'cmp_answers';
   const STORAGE_IDENTITY = 'cmp_identity';
+
   const root = document.getElementById('questions-root');
   const progressText = document.getElementById('progress-text');
   const progressPercent = document.getElementById('progress-percent');
   const progressFill = document.getElementById('progress-fill');
   const btnSubmit = document.getElementById('btn-submit');
   const btnReset = document.getElementById('btn-reset');
+
   const fields = {
     prenom: document.getElementById('prenom'),
     nom: document.getElementById('nom'),
     club: document.getElementById('club')
   };
 
-  if (!root || !window.CMP_QUESTIONS) return;
+  if (!root || !window.CMP_QUESTIONS || !window.CMP_SCALE) return;
 
   let answers = loadJSON(STORAGE_ANSWERS, {});
   const savedIdentity = loadJSON(STORAGE_IDENTITY, {});
+  const passationContext = getPassationContext();
 
-  Object.keys(fields).forEach((key) => {
-    if (fields[key]) fields[key].value = savedIdentity[key] || '';
-    fields[key]?.addEventListener('input', saveIdentity);
-  });
+  prefillIdentityFromContext();
+  bindIdentityEvents();
 
   function loadJSON(key, fallback) {
     try {
@@ -29,6 +30,52 @@
     } catch (error) {
       return fallback;
     }
+  }
+
+  function getPassationContext() {
+    try {
+      return JSON.parse(localStorage.getItem('cmp_passation_context') || '{}') || {};
+    } catch (error) {
+      return {};
+    }
+  }
+
+  function getPassationToken() {
+    const params = new URLSearchParams(window.location.search);
+    const urlToken = params.get('token') || '';
+    const runtimeToken = window.CMP_RUNTIME?.passation?.token || '';
+    const storedContextToken = passationContext.token || '';
+    const localToken = localStorage.getItem('cmp_token') || '';
+    const legacyToken = localStorage.getItem('cmp_passation_token') || '';
+
+    const token = urlToken || runtimeToken || storedContextToken || localToken || legacyToken || '';
+
+    if (token) {
+      localStorage.setItem('cmp_token', token);
+      localStorage.setItem('cmp_passation_token', token);
+    }
+
+    return token;
+  }
+
+  function prefillIdentityFromContext() {
+    const prenomValue = savedIdentity.prenom || passationContext.firstname || '';
+    const nomValue = savedIdentity.nom || passationContext.lastname || '';
+    const clubValue = savedIdentity.club || '';
+
+    if (fields.prenom) fields.prenom.value = prenomValue;
+    if (fields.nom) fields.nom.value = nomValue;
+    if (fields.club) fields.club.value = clubValue;
+
+    saveIdentity();
+  }
+
+  function bindIdentityEvents() {
+    Object.keys(fields).forEach((key) => {
+      if (fields[key]) {
+        fields[key].addEventListener('input', saveIdentity);
+      }
+    });
   }
 
   function saveIdentity() {
@@ -39,7 +86,8 @@
     return {
       prenom: fields.prenom?.value.trim() || '',
       nom: fields.nom?.value.trim() || '',
-      club: fields.club?.value.trim() || ''
+      club: fields.club?.value.trim() || '',
+      email: passationContext.email || ''
     };
   }
 
@@ -47,6 +95,7 @@
     root.innerHTML = window.CMP_QUESTIONS.map((question, index) => {
       const options = window.CMP_SCALE.map((scale) => {
         const checked = Number(answers[question.id]) === scale.value ? 'checked' : '';
+
         return `
           <label class="scale-option">
             <input type="radio" name="${question.id}" value="${scale.value}" ${checked} />
@@ -99,81 +148,27 @@
 
   function validateForm() {
     const missing = window.CMP_QUESTIONS.filter((question) => answers[question.id] == null);
+
     if (missing.length) {
       const firstMissing = document.querySelector(`[data-question="${missing[0].id}"]`);
       firstMissing?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       alert(`Il manque ${missing.length} réponse(s). Merci de compléter tout le questionnaire.`);
       return false;
     }
-    return true;
-  }
-
-  function getPassationToken() {
-    const urlToken = new URLSearchParams(window.location.search).get('token') || '';
-
-    if (urlToken) {
-      localStorage.setItem('cmp_token', urlToken);
-      return urlToken;
-    }
-
-    try {
-      const storedContext = JSON.parse(localStorage.getItem('cmp_passation_context') || '{}');
-      if (storedContext?.token) {
-        localStorage.setItem('cmp_token', storedContext.token);
-        return storedContext.token;
-      }
-    } catch (error) {}
-
-    return localStorage.getItem('cmp_token') || '';
-  }
-
-  async function supabaseInsertCmpResult(report) {
-    const token = getPassationToken();
-
-    if (!token) {
-      alert("Token manquant dans l'URL");
-      return false;
-    }
-
-    if (!window.CMP_SUPABASE_URL || !window.CMP_SUPABASE_ANON_KEY) {
-      alert("Configuration Supabase manquante");
-      return false;
-    }
-
-    const response = await fetch(`${window.CMP_SUPABASE_URL}/rest/v1/cmp_results`, {
-      method: 'POST',
-      headers: {
-        apikey: window.CMP_SUPABASE_ANON_KEY,
-        Authorization: `Bearer ${window.CMP_SUPABASE_ANON_KEY}`,
-        'Content-Type': 'application/json',
-        Prefer: 'return=representation'
-      },
-      body: JSON.stringify({
-        token: token,
-        profile_code: report.profil_code,
-        profile_label: report.profil_nom,
-        score_global: report.score_global,
-        confiance: report.dimensions?.confiance ?? null,
-        regulation: report.dimensions?.regulation ?? null,
-        engagement: report.dimensions?.engagement ?? null,
-        stabilite: report.dimensions?.stabilite ?? null,
-        raw_data: report
-      })
-    });
-
-    if (!response.ok) {
-      console.error(await response.text());
-      alert("Sauvegarde Supabase impossible");
-      return false;
-    }
 
     return true;
   }
 
-  btnSubmit?.addEventListener('click', async () => {
+  async function handleSubmit() {
     saveIdentity();
 
     if (!validateForm()) return;
+
+    const token = getPassationToken();
+    if (!token) {
+      alert("Token manquant dans l'URL ou le contexte local");
+      return;
+    }
 
     const scores = computeCMPScores(window.CMP_QUESTIONS, answers);
     const report = buildCMPInterpretation(scores, getIdentity());
@@ -181,26 +176,33 @@
     localStorage.setItem('cmp_result', JSON.stringify(report));
 
     if (typeof exportCMPToHub === 'function') {
-      try {
-        exportCMPToHub(report);
-      } catch (error) {
-        console.error(error);
+      const exportResult = await exportCMPToHub(report);
+
+      if (!exportResult || !exportResult.ok) {
+        const errorMessage =
+          exportResult?.error ||
+          'Sauvegarde Supabase impossible';
+        alert(`Sauvegarde Supabase impossible : ${errorMessage}`);
+        return;
       }
     }
 
-    await supabaseInsertCmpResult(report);
-
     window.location.href = 'resultats.html';
-  });
+  }
 
-  btnReset?.addEventListener('click', () => {
+  function handleReset() {
     if (!confirm('Réinitialiser toutes les réponses du questionnaire CMP ?')) return;
+
     answers = {};
     localStorage.removeItem(STORAGE_ANSWERS);
     localStorage.removeItem('cmp_result');
+
     renderQuestions();
     updateProgress();
-  });
+  }
+
+  btnSubmit?.addEventListener('click', handleSubmit);
+  btnReset?.addEventListener('click', handleReset);
 
   renderQuestions();
   updateProgress();
