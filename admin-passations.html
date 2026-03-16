@@ -1,1 +1,1405 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Passations A4P</title>
 
+  <style>
+    :root {
+      --bg: #eef2f7;
+      --card: #ffffff;
+      --ink: #1e2b45;
+      --muted: #667085;
+      --line: #d9e1ec;
+      --primary: #2f4d85;
+      --primary-2: #6f8fd8;
+      --pill: #eef2fa;
+      --success: #067647;
+      --warning: #b54708;
+      --danger: #b42318;
+      --shadow: 0 12px 30px rgba(31, 53, 96, 0.10);
+      --radius: 22px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, Arial, sans-serif;
+      background: linear-gradient(180deg, #edf2f8 0%, #eef2f7 100%);
+      color: var(--ink);
+    }
+
+    .topbar {
+      background: #f4f7fb;
+      border-bottom: 1px solid var(--line);
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .logo {
+      width: 54px;
+      height: 54px;
+      border-radius: 10px;
+      object-fit: cover;
+      background: #fff;
+      border: 1px solid var(--line);
+      flex: 0 0 auto;
+    }
+
+    .brand {
+      min-width: 0;
+    }
+
+    .brand-top {
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      color: var(--primary);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .brand-title {
+      font-size: 30px;
+      font-weight: 800;
+      line-height: 1;
+      margin: 0;
+      color: var(--ink);
+    }
+
+    .topbar-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .page {
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 28px 18px 80px;
+    }
+
+    .hero,
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .hero {
+      padding: 28px;
+      margin-bottom: 22px;
+    }
+
+    .eyebrow {
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #7281a7;
+      margin: 0 0 12px;
+    }
+
+    .hero h1 {
+      font-size: 52px;
+      line-height: 0.96;
+      margin: 0 0 18px;
+      color: var(--ink);
+    }
+
+    .hero p {
+      font-size: 22px;
+      line-height: 1.6;
+      color: var(--muted);
+      margin: 0;
+      max-width: 960px;
+    }
+
+    .btn {
+      appearance: none;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 18px;
+      border-radius: 16px;
+      font-weight: 700;
+      font-size: 16px;
+      transition: 0.18s ease;
+      min-height: 52px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary) 0%, #395da0 100%);
+      color: #fff;
+      box-shadow: 0 8px 22px rgba(47, 77, 133, 0.22);
+    }
+
+    .btn-secondary {
+      background: #fff;
+      color: var(--primary);
+      border: 1px solid #cfd8e6;
+    }
+
+    .btn-danger {
+      background: #fff5f5;
+      color: var(--danger);
+      border: 1px solid #fecaca;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 18px;
+      margin: 22px 0;
+    }
+
+    .stat-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .stat-value {
+      font-size: 42px;
+      font-weight: 800;
+      color: var(--primary);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .stat-label {
+      font-size: 18px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 20px;
+      margin-bottom: 22px;
+    }
+
+    .three-col {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 20px;
+      margin-bottom: 22px;
+    }
+
+    .section-head {
+      padding: 22px 22px 14px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: 34px;
+      line-height: 1;
+      color: var(--ink);
+    }
+
+    .section-body {
+      padding: 22px;
+    }
+
+    .grid-form {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    .field label {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .input,
+    .select,
+    .textarea {
+      width: 100%;
+      border: 1px solid #d7deea;
+      border-radius: 16px;
+      background: #fff;
+      min-height: 56px;
+      padding: 14px 16px;
+      font-size: 18px;
+      color: var(--ink);
+      outline: none;
+      font-family: inherit;
+    }
+
+    .textarea {
+      min-height: 140px;
+      resize: vertical;
+    }
+
+    .input:focus,
+    .select:focus,
+    .textarea:focus {
+      border-color: #91a7d7;
+      box-shadow: 0 0 0 4px rgba(111, 143, 216, 0.12);
+    }
+
+    .actions-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .info-box {
+      background: #f8fafd;
+      border: 1px solid #e3eaf5;
+      border-radius: 18px;
+      padding: 16px 18px;
+      color: #344054;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      word-break: break-all;
+    }
+
+    .success-box,
+    .error-box,
+    .loading-box {
+      border-radius: 18px;
+      padding: 16px 18px;
+      font-size: 16px;
+      line-height: 1.6;
+      margin-top: 16px;
+    }
+
+    .success-box {
+      background: #ecfdf3;
+      border: 1px solid #abefc6;
+      color: var(--success);
+      font-weight: 700;
+    }
+
+    .error-box {
+      background: #fef3f2;
+      border: 1px solid #fecdca;
+      color: var(--danger);
+      font-weight: 700;
+    }
+
+    .loading-box {
+      background: #f8fafd;
+      border: 1px solid #dbe6f4;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .filters {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 22px;
+      box-shadow: var(--shadow);
+      margin-bottom: 22px;
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1fr 1fr auto;
+      gap: 14px;
+      align-items: end;
+    }
+
+    .table-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      margin-bottom: 22px;
+    }
+
+    .table-wrap {
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    table {
+      width: 100%;
+      min-width: 1320px;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      text-align: left;
+      vertical-align: top;
+      padding: 16px 18px;
+      border-bottom: 1px solid #e8edf5;
+      font-size: 16px;
+    }
+
+    th {
+      background: #f8fafd;
+      color: #52607d;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 800;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    tr:hover td {
+      background: #fbfcff;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--pill);
+      color: var(--primary);
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-weight: 800;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .pill-success {
+      background: #ecfdf3;
+      color: var(--success);
+    }
+
+    .pill-warning {
+      background: #fff7ed;
+      color: var(--warning);
+    }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .team-card {
+      background: #f8fafd;
+      border: 1px solid #e3eaf5;
+      border-radius: 18px;
+      padding: 18px;
+    }
+
+    .team-card h3 {
+      margin: 0 0 12px;
+      font-size: 20px;
+      line-height: 1.2;
+      word-break: break-word;
+    }
+
+    .team-meta {
+      display: grid;
+      gap: 8px;
+      color: #475467;
+      font-size: 15px;
+    }
+
+    .link-box {
+      background: #0c244b;
+      color: #eef4ff;
+      border-radius: 18px;
+      padding: 16px;
+      font-size: 14px;
+      line-height: 1.7;
+      word-break: break-all;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.56);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      z-index: 100;
+    }
+
+    .modal {
+      width: min(1000px, 100%);
+      max-height: 88vh;
+      overflow: auto;
+      background: #fff;
+      border-radius: 24px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25);
+    }
+
+    .modal-header {
+      padding: 22px 24px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      position: sticky;
+      top: 0;
+      background: #fff;
+      z-index: 2;
+    }
+
+    .modal-title {
+      margin: 0;
+      font-size: 28px;
+      line-height: 1.05;
+    }
+
+    .modal-body {
+      padding: 22px 24px 28px;
+    }
+
+    @media (max-width: 1100px) {
+      .two-col,
+      .three-col,
+      .team-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .filters {
+        grid-template-columns: 1fr;
+      }
+
+      .grid-form {
+        grid-template-columns: 1fr;
+      }
+
+      .stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 760px) {
+      .hero h1 {
+        font-size: 36px;
+      }
+
+      .hero p {
+        font-size: 18px;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .topbar-actions {
+        width: 100%;
+      }
+
+      .topbar-actions .btn {
+        flex: 1 1 auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-left">
+      <img
+        class="logo"
+        src="assets/logo-a4p.png"
+        alt="Logo A4P"
+        onerror="this.onerror=null;this.src='assets/logo-a4p.jpg';"
+      />
+      <div class="brand">
+        <div class="brand-top">Administration A4P</div>
+        <h1 class="brand-title">Passations Admin</h1>
+      </div>
+    </div>
+
+    <div class="topbar-actions">
+      <a class="btn btn-secondary" href="index.html">Accueil CMP</a>
+      <a class="btn btn-secondary" href="admin-cmp.html">Admin CMP</a>
+      <button class="btn btn-primary" id="btn-refresh">Rafraîchir</button>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="hero">
+      <p class="eyebrow">Administration des passations</p>
+      <h1>Créer, envoyer et suivre les passations A4P.</h1>
+      <p>
+        Cette page permet de générer des tokens, produire les liens de test,
+        suivre les passations en attente ou terminées, et regrouper la progression
+        par équipe pour préparer la vente aux clubs.
+      </p>
+    </section>
+
+    <section class="stats">
+      <article class="stat-card">
+        <div class="stat-value" id="stat-total">0</div>
+        <div class="stat-label">passations</div>
+      </article>
+      <article class="stat-card">
+        <div class="stat-value" id="stat-pending">0</div>
+        <div class="stat-label">en attente</div>
+      </article>
+      <article class="stat-card">
+        <div class="stat-value" id="stat-completed">0</div>
+        <div class="stat-label">terminées</div>
+      </article>
+      <article class="stat-card">
+        <div class="stat-value" id="stat-rate">0%</div>
+        <div class="stat-label">taux de complétion</div>
+      </article>
+    </section>
+
+    <section class="two-col">
+      <section class="card">
+        <div class="section-head">
+          <h2>Créer une passation</h2>
+        </div>
+        <div class="section-body">
+          <div class="grid-form">
+            <div class="field">
+              <label for="single-module">Module</label>
+              <select id="single-module" class="select">
+                <option value="CMP">CMP</option>
+                <option value="PMP">PMP</option>
+                <option value="PSYCHO">PSYCHO</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="single-status">Statut initial</label>
+              <select id="single-status" class="select">
+                <option value="pending">pending</option>
+                <option value="completed">completed</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="single-player-id">player_id (optionnel)</label>
+              <input id="single-player-id" class="input" type="text" placeholder="UUID joueur" />
+            </div>
+
+            <div class="field">
+              <label for="single-team-id">team_id (optionnel)</label>
+              <input id="single-team-id" class="input" type="text" placeholder="UUID équipe" />
+            </div>
+
+            <div class="field">
+              <label for="single-club-id">club_id (optionnel)</label>
+              <input id="single-club-id" class="input" type="text" placeholder="UUID club" />
+            </div>
+
+            <div class="field">
+              <label for="single-token">Token personnalisé (optionnel)</label>
+              <input id="single-token" class="input" type="text" placeholder="laisser vide = génération automatique" />
+            </div>
+          </div>
+
+          <div class="actions-row">
+            <button class="btn btn-primary" id="btn-create-single">Créer la passation</button>
+            <button class="btn btn-secondary" id="btn-generate-single-token">Générer un token</button>
+          </div>
+
+          <div id="single-success" class="success-box hidden"></div>
+          <div id="single-error" class="error-box hidden"></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-head">
+          <h2>Créer des passations en lot</h2>
+        </div>
+        <div class="section-body">
+          <div class="grid-form">
+            <div class="field">
+              <label for="bulk-module">Module</label>
+              <select id="bulk-module" class="select">
+                <option value="CMP">CMP</option>
+                <option value="PMP">PMP</option>
+                <option value="PSYCHO">PSYCHO</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="bulk-status">Statut initial</label>
+              <select id="bulk-status" class="select">
+                <option value="pending">pending</option>
+                <option value="completed">completed</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="bulk-team-id">team_id (optionnel)</label>
+              <input id="bulk-team-id" class="input" type="text" placeholder="UUID équipe" />
+            </div>
+
+            <div class="field">
+              <label for="bulk-club-id">club_id (optionnel)</label>
+              <input id="bulk-club-id" class="input" type="text" placeholder="UUID club" />
+            </div>
+
+            <div class="field full">
+              <label for="bulk-count">Nombre de passations</label>
+              <input id="bulk-count" class="input" type="number" min="1" max="200" value="10" />
+            </div>
+          </div>
+
+          <div class="actions-row">
+            <button class="btn btn-primary" id="btn-create-bulk">Créer le lot</button>
+          </div>
+
+          <div class="info-box" style="margin-top:16px;">
+            Cette création en lot génère des tokens uniques reliés au même <span class="mono">team_id</span> et / ou <span class="mono">club_id</span>.
+            C’est utile pour une équipe entière.
+          </div>
+
+          <div id="bulk-success" class="success-box hidden"></div>
+          <div id="bulk-error" class="error-box hidden"></div>
+        </div>
+      </section>
+    </section>
+
+    <section class="card" style="margin-bottom:22px;">
+      <div class="section-head">
+        <h2>Lien généré</h2>
+      </div>
+      <div class="section-body">
+        <div class="link-box" id="generated-link-box">Aucun lien généré pour le moment.</div>
+        <div class="actions-row" style="margin-top:16px;">
+          <button class="btn btn-secondary" id="btn-copy-generated-link">Copier le lien</button>
+          <button class="btn btn-secondary" id="btn-open-generated-link">Ouvrir le lien</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="filters">
+      <div class="field">
+        <label for="search-input">Recherche</label>
+        <input id="search-input" class="input" type="text" placeholder="Token, player_id, team_id, club_id..." />
+      </div>
+
+      <div class="field">
+        <label for="module-filter">Filtrer par module</label>
+        <select id="module-filter" class="select">
+          <option value="">Tous les modules</option>
+          <option value="CMP">CMP</option>
+          <option value="PMP">PMP</option>
+          <option value="PSYCHO">PSYCHO</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="status-filter">Filtrer par statut</label>
+        <select id="status-filter" class="select">
+          <option value="">Tous les statuts</option>
+          <option value="pending">pending</option>
+          <option value="completed">completed</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="team-filter">Filtrer par team_id</label>
+        <input id="team-filter" class="input" type="text" placeholder="UUID équipe" />
+      </div>
+
+      <div class="field">
+        <label>&nbsp;</label>
+        <button class="btn btn-secondary" id="btn-reset-filters">Réinitialiser</button>
+      </div>
+    </section>
+
+    <section class="table-card">
+      <div class="section-head">
+        <h2>Passations</h2>
+      </div>
+
+      <div id="loading-box" class="loading-box">Chargement des passations…</div>
+      <div id="error-box" class="error-box hidden"></div>
+
+      <div id="table-container" class="table-wrap hidden">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Module</th>
+              <th>Statut</th>
+              <th>player_id</th>
+              <th>team_id</th>
+              <th>club_id</th>
+              <th>Token</th>
+              <th>Résultat</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="passations-body"></tbody>
+        </table>
+      </div>
+
+      <div id="empty-box" class="loading-box hidden">Aucune passation trouvée.</div>
+    </section>
+
+    <section class="card">
+      <div class="section-head">
+        <h2>Suivi par équipe</h2>
+      </div>
+      <div class="section-body">
+        <div id="teams-empty" class="loading-box hidden">Aucune équipe détectée dans les passations.</div>
+        <div id="teams-grid" class="team-grid"></div>
+      </div>
+    </section>
+  </main>
+
+  <div id="modal-backdrop" class="modal-backdrop hidden">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modal-title">Passation</h2>
+        <button class="btn btn-secondary" id="btn-close-modal">Fermer</button>
+      </div>
+      <div class="modal-body" id="modal-body"></div>
+    </div>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script>
+    (function () {
+      const statTotal = document.getElementById('stat-total');
+      const statPending = document.getElementById('stat-pending');
+      const statCompleted = document.getElementById('stat-completed');
+      const statRate = document.getElementById('stat-rate');
+
+      const btnRefresh = document.getElementById('btn-refresh');
+
+      const singleModule = document.getElementById('single-module');
+      const singleStatus = document.getElementById('single-status');
+      const singlePlayerId = document.getElementById('single-player-id');
+      const singleTeamId = document.getElementById('single-team-id');
+      const singleClubId = document.getElementById('single-club-id');
+      const singleToken = document.getElementById('single-token');
+      const btnCreateSingle = document.getElementById('btn-create-single');
+      const btnGenerateSingleToken = document.getElementById('btn-generate-single-token');
+      const singleSuccess = document.getElementById('single-success');
+      const singleError = document.getElementById('single-error');
+
+      const bulkModule = document.getElementById('bulk-module');
+      const bulkStatus = document.getElementById('bulk-status');
+      const bulkTeamId = document.getElementById('bulk-team-id');
+      const bulkClubId = document.getElementById('bulk-club-id');
+      const bulkCount = document.getElementById('bulk-count');
+      const btnCreateBulk = document.getElementById('btn-create-bulk');
+      const bulkSuccess = document.getElementById('bulk-success');
+      const bulkError = document.getElementById('bulk-error');
+
+      const generatedLinkBox = document.getElementById('generated-link-box');
+      const btnCopyGeneratedLink = document.getElementById('btn-copy-generated-link');
+      const btnOpenGeneratedLink = document.getElementById('btn-open-generated-link');
+
+      const searchInput = document.getElementById('search-input');
+      const moduleFilter = document.getElementById('module-filter');
+      const statusFilter = document.getElementById('status-filter');
+      const teamFilter = document.getElementById('team-filter');
+      const btnResetFilters = document.getElementById('btn-reset-filters');
+
+      const loadingBox = document.getElementById('loading-box');
+      const errorBox = document.getElementById('error-box');
+      const tableContainer = document.getElementById('table-container');
+      const emptyBox = document.getElementById('empty-box');
+      const passationsBody = document.getElementById('passations-body');
+
+      const teamsGrid = document.getElementById('teams-grid');
+      const teamsEmpty = document.getElementById('teams-empty');
+
+      const modalBackdrop = document.getElementById('modal-backdrop');
+      const modalTitle = document.getElementById('modal-title');
+      const modalBody = document.getElementById('modal-body');
+      const btnCloseModal = document.getElementById('btn-close-modal');
+
+      let allPassations = [];
+      let allResults = [];
+      let mergedRows = [];
+      let filteredRows = [];
+      let latestGeneratedLink = '';
+
+      function getSupabaseUrl() {
+        return window.CMP_SUPABASE_URL || '';
+      }
+
+      function getSupabaseAnonKey() {
+        return window.CMP_SUPABASE_ANON_KEY || '';
+      }
+
+      function escapeHtml(str) {
+        return String(str || '').replace(/[&<>"']/g, function (char) {
+          return {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+          }[char];
+        });
+      }
+
+      function formatDate(value) {
+        if (!value) return '—';
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return value;
+        return date.toLocaleString('fr-FR');
+      }
+
+      function normalizeNullable(value) {
+        const v = String(value || '').trim();
+        return v ? v : null;
+      }
+
+      function generateToken(length) {
+        const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+        let out = '';
+        for (let i = 0; i < length; i += 1) {
+          out += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return out;
+      }
+
+      function getModuleBaseUrl(module) {
+        const urls = window.A4P_CONFIG?.urls || {};
+
+        if (module === 'CMP' && urls.cmp && urls.cmp !== '#') return urls.cmp;
+        if (module === 'PMP' && urls.pmp && urls.pmp !== '#') return urls.pmp;
+        if ((module === 'PSYCHO' || module === 'EPE') && urls.epe && urls.epe !== '#') return urls.epe;
+
+        return '#';
+      }
+
+      function buildTestLink(row) {
+        const baseUrl = getModuleBaseUrl(row.module);
+
+        if (!baseUrl || baseUrl === '#') return '';
+
+        const params = new URLSearchParams();
+        params.set('token', row.token || '');
+        params.set('module', row.module || 'CMP');
+
+        if (row.player_id) params.set('playerId', row.player_id);
+        if (row.team_id) params.set('teamId', row.team_id);
+        if (row.club_id) params.set('clubId', row.club_id);
+
+        return `${baseUrl}?${params.toString()}`;
+      }
+
+      function setGeneratedLink(link) {
+        latestGeneratedLink = link || '';
+        generatedLinkBox.textContent = latestGeneratedLink || 'Aucun lien généré pour le moment.';
+      }
+
+      function showBox(el, message) {
+        el.textContent = message;
+        el.classList.remove('hidden');
+      }
+
+      function hideBox(el) {
+        el.textContent = '';
+        el.classList.add('hidden');
+      }
+
+      async function fetchJson(url, options) {
+        const response = await fetch(url, options);
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(errorText || 'Erreur Supabase');
+        }
+        return await response.json().catch(() => []);
+      }
+
+      async function fetchPassations() {
+        const supabaseUrl = getSupabaseUrl();
+        const supabaseKey = getSupabaseAnonKey();
+
+        const query = 'select=token,status,module,player_id,team_id,club_id,created_at&order=created_at.desc';
+
+        return await fetchJson(`${supabaseUrl}/rest/v1/passations?${query}`, {
+          method: 'GET',
+          headers: {
+            apikey: supabaseKey,
+            Authorization: `Bearer ${supabaseKey}`,
+            'Content-Type': 'application/json'
+          }
+        });
+      }
+
+      async function fetchCmpResults() {
+        const supabaseUrl = getSupabaseUrl();
+        const supabaseKey = getSupabaseAnonKey();
+
+        const query = 'select=token,score_global,profile_label,created_at&order=created_at.desc';
+
+        return await fetchJson(`${supabaseUrl}/rest/v1/cmp_results?${query}`, {
+          method: 'GET',
+          headers: {
+            apikey: supabaseKey,
+            Authorization: `Bearer ${supabaseKey}`,
+            'Content-Type': 'application/json'
+          }
+        });
+      }
+
+      function mergeData(passations, results) {
+        const resultMap = new Map();
+        results.forEach((item) => {
+          if (!item?.token) return;
+          if (!resultMap.has(item.token)) {
+            resultMap.set(item.token, item);
+          }
+        });
+
+        return passations.map((item) => {
+          const result = resultMap.get(item.token) || null;
+          return {
+            ...item,
+            result_score_global: result?.score_global ?? null,
+            result_profile_label: result?.profile_label ?? null,
+            result_created_at: result?.created_at ?? null
+          };
+        });
+      }
+
+      function updateStats(rows) {
+        const total = rows.length;
+        const pending = rows.filter((row) => row.status === 'pending').length;
+        const completed = rows.filter((row) => row.status === 'completed').length;
+        const rate = total ? Math.round((completed / total) * 100) : 0;
+
+        statTotal.textContent = String(total);
+        statPending.textContent = String(pending);
+        statCompleted.textContent = String(completed);
+        statRate.textContent = `${rate}%`;
+      }
+
+      function applyFilters() {
+        const search = (searchInput.value || '').trim().toLowerCase();
+        const moduleValue = moduleFilter.value || '';
+        const statusValue = statusFilter.value || '';
+        const teamValue = (teamFilter.value || '').trim().toLowerCase();
+
+        filteredRows = mergedRows.filter((row) => {
+          const haystack = [
+            row.token,
+            row.module,
+            row.status,
+            row.player_id,
+            row.team_id,
+            row.club_id,
+            row.result_profile_label
+          ].filter(Boolean).join(' ').toLowerCase();
+
+          const matchSearch = !search || haystack.includes(search);
+          const matchModule = !moduleValue || row.module === moduleValue;
+          const matchStatus = !statusValue || row.status === statusValue;
+          const matchTeam = !teamValue || String(row.team_id || '').toLowerCase().includes(teamValue);
+
+          return matchSearch && matchModule && matchStatus && matchTeam;
+        });
+
+        renderPassations(filteredRows);
+        renderTeams(filteredRows);
+        updateStats(filteredRows);
+      }
+
+      function renderPassations(rows) {
+        passationsBody.innerHTML = '';
+
+        if (!rows.length) {
+          tableContainer.classList.add('hidden');
+          emptyBox.classList.remove('hidden');
+          return;
+        }
+
+        emptyBox.classList.add('hidden');
+        tableContainer.classList.remove('hidden');
+
+        rows.forEach((row) => {
+          const tr = document.createElement('tr');
+          const link = buildTestLink(row);
+          const statusClass = row.status === 'completed' ? 'pill-success' : 'pill-warning';
+          const resultText = row.result_profile_label
+            ? `${row.result_profile_label} • ${row.result_score_global ?? '—'}`
+            : '—';
+
+          tr.innerHTML = `
+            <td>${escapeHtml(formatDate(row.created_at))}</td>
+            <td><span class="pill">${escapeHtml(row.module || '—')}</span></td>
+            <td><span class="pill ${statusClass}">${escapeHtml(row.status || '—')}</span></td>
+            <td><span class="mono">${escapeHtml(row.player_id || '—')}</span></td>
+            <td><span class="mono">${escapeHtml(row.team_id || '—')}</span></td>
+            <td><span class="mono">${escapeHtml(row.club_id || '—')}</span></td>
+            <td><span class="mono">${escapeHtml(row.token || '—')}</span></td>
+            <td>${escapeHtml(resultText)}</td>
+            <td>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                <button class="btn btn-secondary btn-copy">Copier lien</button>
+                <button class="btn btn-secondary btn-open"${link ? '' : ' disabled'}>Ouvrir</button>
+                <button class="btn btn-secondary btn-detail">Détail</button>
+              </div>
+            </td>
+          `;
+
+          tr.querySelector('.btn-copy').addEventListener('click', async function () {
+            if (!link) {
+              alert('Aucune URL de test configurée pour ce module.');
+              return;
+            }
+            await navigator.clipboard.writeText(link);
+            setGeneratedLink(link);
+            alert('Lien copié.');
+          });
+
+          tr.querySelector('.btn-open').addEventListener('click', function () {
+            if (!link) {
+              alert('Aucune URL de test configurée pour ce module.');
+              return;
+            }
+            window.open(link, '_blank');
+          });
+
+          tr.querySelector('.btn-detail').addEventListener('click', function () {
+            openDetailModal(row, link);
+          });
+
+          passationsBody.appendChild(tr);
+        });
+      }
+
+      function renderTeams(rows) {
+        teamsGrid.innerHTML = '';
+
+        const teams = new Map();
+
+        rows.forEach((row) => {
+          const key = row.team_id || '';
+          if (!key) return;
+
+          if (!teams.has(key)) {
+            teams.set(key, {
+              team_id: key,
+              total: 0,
+              pending: 0,
+              completed: 0,
+              modules: new Set()
+            });
+          }
+
+          const item = teams.get(key);
+          item.total += 1;
+          if (row.status === 'completed') item.completed += 1;
+          else item.pending += 1;
+          if (row.module) item.modules.add(row.module);
+        });
+
+        const items = Array.from(teams.values());
+
+        if (!items.length) {
+          teamsEmpty.classList.remove('hidden');
+          return;
+        }
+
+        teamsEmpty.classList.add('hidden');
+
+        items
+          .sort((a, b) => b.total - a.total)
+          .forEach((team) => {
+            const rate = team.total ? Math.round((team.completed / team.total) * 100) : 0;
+            const div = document.createElement('div');
+            div.className = 'team-card';
+            div.innerHTML = `
+              <h3>${escapeHtml(team.team_id)}</h3>
+              <div class="team-meta">
+                <div><strong>Total :</strong> ${team.total}</div>
+                <div><strong>Terminées :</strong> ${team.completed}</div>
+                <div><strong>En attente :</strong> ${team.pending}</div>
+                <div><strong>Taux :</strong> ${rate}%</div>
+                <div><strong>Modules :</strong> ${escapeHtml(Array.from(team.modules).join(', ') || '—')}</div>
+              </div>
+            `;
+            teamsGrid.appendChild(div);
+          });
+      }
+
+      function openDetailModal(row, link) {
+        modalTitle.textContent = `Passation ${row.module || ''} — ${row.token || ''}`;
+
+        modalBody.innerHTML = `
+          <div class="info-box" style="margin-bottom:18px;">
+            <strong>Date :</strong> ${escapeHtml(formatDate(row.created_at))}<br>
+            <strong>Module :</strong> ${escapeHtml(row.module || '—')}<br>
+            <strong>Statut :</strong> ${escapeHtml(row.status || '—')}<br>
+            <strong>player_id :</strong> <span class="mono">${escapeHtml(row.player_id || '—')}</span><br>
+            <strong>team_id :</strong> <span class="mono">${escapeHtml(row.team_id || '—')}</span><br>
+            <strong>club_id :</strong> <span class="mono">${escapeHtml(row.club_id || '—')}</span><br>
+            <strong>Token :</strong> <span class="mono">${escapeHtml(row.token || '—')}</span>
+          </div>
+
+          <div class="info-box" style="margin-bottom:18px;">
+            <strong>Progression :</strong><br>
+            Résultat détecté : ${row.result_profile_label ? 'oui' : 'non'}<br>
+            Profil : ${escapeHtml(row.result_profile_label || '—')}<br>
+            Score : ${escapeHtml(row.result_score_global != null ? row.result_score_global : '—')}<br>
+            Date résultat : ${escapeHtml(formatDate(row.result_created_at))}
+          </div>
+
+          <div class="link-box">${escapeHtml(link || 'Aucune URL configurée pour ce module.')}</div>
+
+          <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:18px;">
+            <button class="btn btn-secondary" id="modal-copy-link">Copier lien</button>
+            <button class="btn btn-secondary" id="modal-open-link"${link ? '' : ' disabled'}>Ouvrir le test</button>
+          </div>
+        `;
+
+        modalBackdrop.classList.remove('hidden');
+
+        document.getElementById('modal-copy-link').addEventListener('click', async function () {
+          if (!link) {
+            alert('Aucune URL configurée pour ce module.');
+            return;
+          }
+          await navigator.clipboard.writeText(link);
+          setGeneratedLink(link);
+          alert('Lien copié.');
+        });
+
+        document.getElementById('modal-open-link').addEventListener('click', function () {
+          if (!link) {
+            alert('Aucune URL configurée pour ce module.');
+            return;
+          }
+          window.open(link, '_blank');
+        });
+      }
+
+      function closeModal() {
+        modalBackdrop.classList.add('hidden');
+        modalBody.innerHTML = '';
+      }
+
+      async function insertPassation(payload) {
+        const supabaseUrl = getSupabaseUrl();
+        const supabaseKey = getSupabaseAnonKey();
+
+        return await fetchJson(`${supabaseUrl}/rest/v1/passations`, {
+          method: 'POST',
+          headers: {
+            apikey: supabaseKey,
+            Authorization: `Bearer ${supabaseKey}`,
+            'Content-Type': 'application/json',
+            Prefer: 'return=representation'
+          },
+          body: JSON.stringify(payload)
+        });
+      }
+
+      async function createSinglePassation() {
+        hideBox(singleSuccess);
+        hideBox(singleError);
+
+        const token = (singleToken.value || '').trim() || generateToken(20);
+
+        const payload = {
+          token: token,
+          status: singleStatus.value,
+          module: singleModule.value,
+          player_id: normalizeNullable(singlePlayerId.value),
+          team_id: normalizeNullable(singleTeamId.value),
+          club_id: normalizeNullable(singleClubId.value)
+        };
+
+        try {
+          const data = await insertPassation(payload);
+          const row = Array.isArray(data) && data.length ? data[0] : payload;
+          const link = buildTestLink(row);
+
+          setGeneratedLink(link);
+          showBox(singleSuccess, `Passation créée. Token : ${row.token}`);
+          singleToken.value = row.token || token;
+
+          await loadPage();
+        } catch (error) {
+          showBox(singleError, error.message || 'Création impossible.');
+        }
+      }
+
+      async function createBulkPassations() {
+        hideBox(bulkSuccess);
+        hideBox(bulkError);
+
+        const count = Number(bulkCount.value || 0);
+
+        if (!count || count < 1) {
+          showBox(bulkError, 'Le nombre de passations doit être supérieur à 0.');
+          return;
+        }
+
+        const items = [];
+        for (let i = 0; i < count; i += 1) {
+          items.push({
+            token: generateToken(20),
+            status: bulkStatus.value,
+            module: bulkModule.value,
+            player_id: null,
+            team_id: normalizeNullable(bulkTeamId.value),
+            club_id: normalizeNullable(bulkClubId.value)
+          });
+        }
+
+        try {
+          const supabaseUrl = getSupabaseUrl();
+          const supabaseKey = getSupabaseAnonKey();
+
+          const data = await fetchJson(`${supabaseUrl}/rest/v1/passations`, {
+            method: 'POST',
+            headers: {
+              apikey: supabaseKey,
+              Authorization: `Bearer ${supabaseKey}`,
+              'Content-Type': 'application/json',
+              Prefer: 'return=representation'
+            },
+            body: JSON.stringify(items)
+          });
+
+          const first = Array.isArray(data) && data.length ? data[0] : items[0];
+          const link = buildTestLink(first);
+
+          setGeneratedLink(link);
+          showBox(
+            bulkSuccess,
+            `${items.length} passations créées. Exemple de token : ${first.token}`
+          );
+
+          await loadPage();
+        } catch (error) {
+          showBox(bulkError, error.message || 'Création en lot impossible.');
+        }
+      }
+
+      async function copyGeneratedLink() {
+        if (!latestGeneratedLink) {
+          alert('Aucun lien généré.');
+          return;
+        }
+        await navigator.clipboard.writeText(latestGeneratedLink);
+        alert('Lien copié.');
+      }
+
+      function openGeneratedLink() {
+        if (!latestGeneratedLink) {
+          alert('Aucun lien généré.');
+          return;
+        }
+        window.open(latestGeneratedLink, '_blank');
+      }
+
+      async function loadPage() {
+        loadingBox.classList.remove('hidden');
+        errorBox.classList.add('hidden');
+        tableContainer.classList.add('hidden');
+        emptyBox.classList.add('hidden');
+
+        try {
+          const [passations, results] = await Promise.all([
+            fetchPassations(),
+            fetchCmpResults()
+          ]);
+
+          allPassations = Array.isArray(passations) ? passations : [];
+          allResults = Array.isArray(results) ? results : [];
+          mergedRows = mergeData(allPassations, allResults);
+
+          applyFilters();
+        } catch (error) {
+          errorBox.textContent = error.message || 'Erreur inconnue';
+          errorBox.classList.remove('hidden');
+        } finally {
+          loadingBox.classList.add('hidden');
+        }
+      }
+
+      btnGenerateSingleToken.addEventListener('click', function () {
+        singleToken.value = generateToken(20);
+      });
+
+      btnCreateSingle.addEventListener('click', createSinglePassation);
+      btnCreateBulk.addEventListener('click', createBulkPassations);
+
+      btnCopyGeneratedLink.addEventListener('click', copyGeneratedLink);
+      btnOpenGeneratedLink.addEventListener('click', openGeneratedLink);
+
+      btnRefresh.addEventListener('click', loadPage);
+
+      searchInput.addEventListener('input', applyFilters);
+      moduleFilter.addEventListener('change', applyFilters);
+      statusFilter.addEventListener('change', applyFilters);
+      teamFilter.addEventListener('input', applyFilters);
+
+      btnResetFilters.addEventListener('click', function () {
+        searchInput.value = '';
+        moduleFilter.value = '';
+        statusFilter.value = '';
+        teamFilter.value = '';
+        applyFilters();
+      });
+
+      btnCloseModal.addEventListener('click', closeModal);
+      modalBackdrop.addEventListener('click', function (event) {
+        if (event.target === modalBackdrop) closeModal();
+      });
+
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') closeModal();
+      });
+
+      loadPage();
+    })();
+  </script>
+</body>
+</html>
