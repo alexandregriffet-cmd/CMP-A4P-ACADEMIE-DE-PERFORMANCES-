@@ -4,61 +4,377 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Questionnaire CMP A4P</title>
-  <link rel="stylesheet" href="css/style.css" />
+
+  <script src="js/config.js"></script>
+  <script src="js/questions.js"></script>
+  <script src="js/calc.js"></script>
+  <script src="js/profiles.js"></script>
+  <script src="js/interpret.js"></script>
+  <script src="js/hub-export.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #eef2f7;
+      color: #1f2a44;
+    }
+
+    .page {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #d8e0ec;
+    }
+
+    .back-link {
+      color: #1f3560;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 18px;
+    }
+
+    .logo-mini {
+      width: 72px;
+      height: 72px;
+      object-fit: cover;
+      border-radius: 8px;
+      background: #fff;
+    }
+
+    .card {
+      background: white;
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: 0 14px 40px rgba(21, 37, 69, 0.08);
+      margin-bottom: 24px;
+    }
+
+    .eyebrow {
+      color: #5d6f96;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-size: 34px;
+      line-height: 1.12;
+      margin: 0 0 18px;
+      color: #14233f;
+    }
+
+    .lead {
+      font-size: 18px;
+      line-height: 1.7;
+      color: #5f6f8e;
+      margin-bottom: 24px;
+    }
+
+    .field-grid {
+      display: grid;
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .field-group {
+      display: grid;
+      gap: 8px;
+    }
+
+    .field-group label {
+      font-size: 16px;
+      font-weight: 700;
+      color: #1f3560;
+    }
+
+    .field-group input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 18px 20px;
+      border-radius: 18px;
+      border: 1px solid #d3dae8;
+      background: #fff;
+      font-size: 18px;
+      color: #1f2a44;
+    }
+
+    .progress-wrap {
+      display: grid;
+      gap: 16px;
+    }
+
+    .progress-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      font-weight: 800;
+      color: #1f3560;
+      font-size: 24px;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 24px;
+      border-radius: 999px;
+      background: #e3e8f1;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #1f3560, #6f8fd8);
+      transition: width 0.2s ease;
+    }
+
+    .question-card {
+      display: grid;
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .question-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .question-index {
+      font-size: 18px;
+      font-weight: 700;
+      color: #1f3560;
+    }
+
+    .dimension-badge {
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: #eef1f7;
+      color: #4f6287;
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    .question-text {
+      font-size: 22px;
+      line-height: 1.45;
+      color: #182640;
+      margin: 0;
+    }
+
+    .scale {
+      display: grid;
+      gap: 16px;
+    }
+
+    .scale-option {
+      display: block;
+      cursor: pointer;
+    }
+
+    .scale-option input {
+      display: none;
+    }
+
+    .scale-label {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding: 22px 24px;
+      border-radius: 22px;
+      border: 1px solid #d3dae8;
+      background: #fff;
+      transition: all 0.2s ease;
+    }
+
+    .scale-option input:checked + .scale-label {
+      border-color: #8fa1c8;
+      background: #f2f5fb;
+      box-shadow: inset 0 0 0 1px #8fa1c8;
+    }
+
+    .scale-number {
+      font-size: 24px;
+      font-weight: 800;
+      color: #274885;
+      min-width: 28px;
+    }
+
+    .scale-text {
+      font-size: 18px;
+      font-weight: 700;
+      color: #5d6f8d;
+    }
+
+    .button-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 28px;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 20px;
+      padding: 20px 22px;
+      font-size: 20px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .btn-secondary {
+      background: #edf1f7;
+      color: #29406b;
+      border: 1px solid #d5ddea;
+    }
+
+    .btn-primary {
+      background: #274885;
+      color: white;
+    }
+
+    .debug-box {
+      margin-top: 16px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: #f7f9fc;
+      border: 1px solid #dde4f0;
+      color: #4c5d7d;
+      font-size: 14px;
+      line-height: 1.5;
+      word-break: break-word;
+    }
+
+    @media (max-width: 700px) {
+      .progress-head {
+        font-size: 20px;
+      }
+
+      h1 {
+        font-size: 26px;
+      }
+
+      .question-text {
+        font-size: 18px;
+      }
+
+      .button-row {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .btn {
+        font-size: 18px;
+        padding: 18px 16px;
+      }
+    }
+  </style>
 </head>
 <body>
-  <header class="topbar">
-    <div class="container topbar-inner">
+  <main class="page">
+    <header class="topbar">
       <a class="back-link" href="index.html">← Retour accueil</a>
-      <img src="assets/logo-a4p.png" alt="A4P" class="topbar-logo" />
-    </div>
-  </header>
+      <img class="logo-mini" src="assets/logo-a4p.jpg" alt="Logo A4P" />
+    </header>
 
-  <main class="container page-stack page-narrow">
-    <section class="card intro-card">
-      <p class="eyebrow">Questionnaire CMP A4P</p>
+    <section class="card">
+      <div class="eyebrow">Questionnaire CMP A4P</div>
       <h1>Complète ton diagnostic</h1>
-      <p class="lead">Réponds de manière spontanée à chaque affirmation. Il n’existe pas de bonne ou de mauvaise réponse.</p>
+      <p class="lead">
+        Réponds de manière spontanée à chaque affirmation. Il n'existe pas de bonne ou de mauvaise réponse.
+      </p>
 
-      <div class="identity-grid">
-        <div class="field">
+      <div class="field-grid">
+        <div class="field-group">
           <label for="prenom">Prénom</label>
           <input id="prenom" type="text" placeholder="Prénom" />
         </div>
-        <div class="field">
+
+        <div class="field-group">
           <label for="nom">Nom</label>
           <input id="nom" type="text" placeholder="Nom" />
         </div>
-        <div class="field field-full">
+
+        <div class="field-group">
           <label for="club">Club / structure</label>
           <input id="club" type="text" placeholder="Club / structure" />
         </div>
       </div>
+
+      <div id="debug-box" class="debug-box"></div>
     </section>
 
-    <section class="card progress-card">
-      <div class="progress-meta">
-        <span id="progress-text">Progression 0 / 16</span>
-        <span id="progress-percent">0%</span>
+    <section class="card">
+      <div class="progress-wrap">
+        <div class="progress-head">
+          <span id="progress-text">Progression 0 / 16</span>
+          <span id="progress-percent">0%</span>
+        </div>
+        <div class="progress-track">
+          <div id="progress-fill" class="progress-fill"></div>
+        </div>
       </div>
-      <div class="progress-bar"><div id="progress-fill"></div></div>
     </section>
 
-    <section id="questions-root" class="questions-stack"></section>
+    <section class="card">
+      <div id="questions-root"></div>
 
-    <section class="sticky-actions">
-      <div class="container sticky-inner">
+      <div class="button-row">
         <button id="btn-reset" class="btn btn-secondary" type="button">Réinitialiser</button>
         <button id="btn-submit" class="btn btn-primary" type="button">Voir mon diagnostic CMP</button>
       </div>
     </section>
   </main>
 
-  <script src="js/questions.js"></script>
-  <script src="js/calc.js"></script>
-  <script src="js/profiles.js"></script>
-  <script src="js/interpret.js"></script>
-  <script src="js/hub-export.js"></script>
+  <script>
+    (function () {
+      const debugBox = document.getElementById('debug-box');
+      const params = new URLSearchParams(window.location.search);
+
+      const tokenUrl = params.get('token') || '';
+
+      let storedContext = {};
+      try {
+        storedContext = JSON.parse(localStorage.getItem('cmp_passation_context') || '{}');
+      } catch (error) {
+        storedContext = {};
+      }
+
+      const tokenStored = localStorage.getItem('cmp_token') || '';
+      const tokenFinal = tokenUrl || storedContext.token || tokenStored || '';
+
+      if (tokenUrl) {
+        localStorage.setItem('cmp_token', tokenUrl);
+      }
+
+      if (debugBox) {
+        debugBox.innerHTML = `
+          <strong>Debug passation</strong><br>
+          token URL : ${tokenUrl || '(vide)'}<br>
+          token localStorage : ${tokenStored || '(vide)'}<br>
+          token contexte : ${(storedContext && storedContext.token) || '(vide)'}<br>
+          token final : ${tokenFinal || '(vide)'}<br>
+          Supabase URL : ${window.CMP_SUPABASE_URL ? 'OK' : 'MANQUANTE'}<br>
+          Supabase key : ${window.CMP_SUPABASE_ANON_KEY ? 'OK' : 'MANQUANTE'}
+        `;
+      }
+    })();
+  </script>
+
   <script src="js/test.js"></script>
 </body>
 </html>
