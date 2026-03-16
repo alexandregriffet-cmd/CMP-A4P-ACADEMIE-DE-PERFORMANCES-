@@ -23,7 +23,13 @@
     const localToken = localStorage.getItem('cmp_token') || '';
     const legacyToken = localStorage.getItem('cmp_passation_token') || '';
 
-    const token = urlToken || runtimeToken || storedContext.token || localToken || legacyToken || '';
+    const token =
+      urlToken ||
+      runtimeToken ||
+      storedContext.token ||
+      localToken ||
+      legacyToken ||
+      '';
 
     if (token) {
       localStorage.setItem('cmp_token', token);
@@ -41,22 +47,11 @@
     return window.CMP_SUPABASE_ANON_KEY || '';
   }
 
-  async function upsertCMPResult(report) {
-    const supabaseUrl = getSupabaseUrl();
-    const supabaseKey = getSupabaseAnonKey();
+  function buildPayload(report) {
+    const storedContext = getStoredContext();
     const token = getFinalToken();
 
-    if (!supabaseUrl || !supabaseKey) {
-      return { ok: false, error: 'Configuration Supabase manquante' };
-    }
-
-    if (!token) {
-      return { ok: false, error: "Token manquant dans l'URL ou le contexte local" };
-    }
-
-    const storedContext = getStoredContext();
-
-    const payload = {
+    return {
       token: token,
       module: 'CMP',
       firstname: report.identity?.prenom || storedContext.firstname || '',
@@ -72,38 +67,114 @@
       stabilite: report.dimensions?.stabilite ?? null,
       dimensions: report.dimensions || {},
       raw_data: report,
-      full_report: report,
-      created_at: new Date().toISOString()
+      full_report: report
     };
-
-    try {
-      const response = await fetch(
-        `${supabaseUrl}/rest/v1/cmp_results?on_conflict=token`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            apikey: supabaseKey,
-            Authorization: `Bearer ${supabaseKey}`,
-            Prefer: 'resolution=merge-duplicates,return=representation'
-          },
-          body: JSON.stringify(payload)
-        }
-      );
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        return { ok: false, error: errorText };
-      }
-
-      const data = await response.json().catch(() => []);
-      return { ok: true, data };
-    } catch (error) {
-      return { ok: false, error: error.message || 'Erreur réseau inconnue' };
-    }
   }
 
-  async function updatePassationStatus(report) {
+  async function findExistingCmpResultByToken(token) {
+    const supabaseUrl = getSupabaseUrl();
+    const supabaseKey = getSupabaseAnonKey();
+
+    const response = await fetch(
+      `${supabaseUrl}/rest/v1/cmp_results?token=eq.${encodeURIComponent(token)}&select=id,token`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          apikey: supabaseKey,
+          Authorization: `Bearer ${supabaseKey}`
+        }
+      }
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      return { ok: false, error: errorText };
+    }
+
+    const data = await response.json().catch(() => []);
+    return { ok: true, data };
+  }
+
+  async function insertCmpResult(payload) {
+    const supabaseUrl = getSupabaseUrl();
+    const supabaseKey = getSupabaseAnonKey();
+
+    const response = await fetch(`${supabaseUrl}/rest/v1/cmp_results`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        apikey: supabaseKey,
+        Authorization: `Bearer ${supabaseKey}`,
+        Prefer: 'return=representation'
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      return { ok: false, error: errorText };
+    }
+
+    const data = await response.json().catch(() => []);
+    return { ok: true, data };
+  }
+
+  async function updateCmpResultByToken(token, payload) {
+    const supabaseUrl = getSupabaseUrl();
+    const supabaseKey = getSupabaseAnonKey();
+
+    const response = await fetch(
+      `${supabaseUrl}/rest/v1/cmp_results?token=eq.${encodeURIComponent(token)}`,
+      {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          apikey: supabaseKey,
+          Authorization: `Bearer ${supabaseKey}`,
+          Prefer: 'return=representation'
+        },
+        body: JSON.stringify(payload)
+      }
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      return { ok: false, error: errorText };
+    }
+
+    const data = await response.json().catch(() => []);
+    return { ok: true, data };
+  }
+
+  async function saveCMPResult(report) {
+    const supabaseUrl = getSupabaseUrl();
+    const supabaseKey = getSupabaseAnonKey();
+    const token = getFinalToken();
+
+    if (!supabaseUrl || !supabaseKey) {
+      return { ok: false, error: 'Configuration Supabase manquante' };
+    }
+
+    if (!token) {
+      return { ok: false, error: "Token manquant dans l'URL ou le contexte local" };
+    }
+
+    const payload = buildPayload(report);
+
+    const existing = await findExistingCmpResultByToken(token);
+    if (!existing.ok) {
+      return existing;
+    }
+
+    if (Array.isArray(existing.data) && existing.data.length > 0) {
+      return await updateCmpResultByToken(token, payload);
+    }
+
+    return await insertCmpResult(payload);
+  }
+
+  async function updatePassationStatus() {
     const supabaseUrl = getSupabaseUrl();
     const supabaseKey = getSupabaseAnonKey();
     const token = getFinalToken();
@@ -116,35 +187,29 @@
       return { ok: false, error: "Token manquant pour mise à jour de la passation" };
     }
 
-    const patchPayload = {
-      status: 'completed'
-    };
-
-    try {
-      const response = await fetch(
-        `${supabaseUrl}/rest/v1/passations?token=eq.${encodeURIComponent(token)}`,
-        {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-            apikey: supabaseKey,
-            Authorization: `Bearer ${supabaseKey}`,
-            Prefer: 'return=representation'
-          },
-          body: JSON.stringify(patchPayload)
-        }
-      );
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        return { ok: false, error: errorText };
+    const response = await fetch(
+      `${supabaseUrl}/rest/v1/passations?token=eq.${encodeURIComponent(token)}`,
+      {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          apikey: supabaseKey,
+          Authorization: `Bearer ${supabaseKey}`,
+          Prefer: 'return=representation'
+        },
+        body: JSON.stringify({
+          status: 'completed'
+        })
       }
+    );
 
-      const data = await response.json().catch(() => []);
-      return { ok: true, data };
-    } catch (error) {
-      return { ok: false, error: error.message || 'Erreur réseau inconnue' };
+    if (!response.ok) {
+      const errorText = await response.text();
+      return { ok: false, error: errorText };
     }
+
+    const data = await response.json().catch(() => []);
+    return { ok: true, data };
   }
 
   window.exportCMPToHub = async function exportCMPToHub(report) {
@@ -164,12 +229,12 @@
 
     localStorage.setItem(storageKey, JSON.stringify(hub));
 
-    const saveResult = await upsertCMPResult(report);
+    const saveResult = await saveCMPResult(report);
     if (!saveResult.ok) {
       return saveResult;
     }
 
-    const passationResult = await updatePassationStatus(report);
+    const passationResult = await updatePassationStatus();
     if (!passationResult.ok) {
       return passationResult;
     }
