@@ -1,1 +1,973 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin CMP A4P</title>
 
+  <style>
+    :root {
+      --bg: #eef2f7;
+      --card: #ffffff;
+      --ink: #1e2b45;
+      --muted: #667085;
+      --line: #d9e1ec;
+      --primary: #2f4d85;
+      --primary-2: #6f8fd8;
+      --pill: #eef2fa;
+      --danger: #b42318;
+      --success: #067647;
+      --shadow: 0 12px 30px rgba(31, 53, 96, 0.10);
+      --radius: 22px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, Arial, sans-serif;
+      background: linear-gradient(180deg, #edf2f8 0%, #eef2f7 100%);
+      color: var(--ink);
+    }
+
+    .topbar {
+      background: #f4f7fb;
+      border-bottom: 1px solid var(--line);
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .logo {
+      width: 54px;
+      height: 54px;
+      border-radius: 10px;
+      object-fit: cover;
+      background: #fff;
+      border: 1px solid var(--line);
+      flex: 0 0 auto;
+    }
+
+    .brand {
+      min-width: 0;
+    }
+
+    .brand-top {
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      color: var(--primary);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .brand-title {
+      font-size: 30px;
+      font-weight: 800;
+      line-height: 1;
+      margin: 0;
+      color: var(--ink);
+    }
+
+    .topbar-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .btn {
+      appearance: none;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 18px;
+      border-radius: 16px;
+      font-weight: 700;
+      font-size: 16px;
+      transition: 0.18s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary) 0%, #395da0 100%);
+      color: #fff;
+      box-shadow: 0 8px 22px rgba(47, 77, 133, 0.22);
+    }
+
+    .btn-secondary {
+      background: #fff;
+      color: var(--primary);
+      border: 1px solid #cfd8e6;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .page {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 28px 18px 80px;
+    }
+
+    .hero {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 28px;
+      box-shadow: var(--shadow);
+      margin-bottom: 22px;
+    }
+
+    .eyebrow {
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #7281a7;
+      margin: 0 0 12px;
+    }
+
+    .hero h1 {
+      font-size: 52px;
+      line-height: 0.96;
+      margin: 0 0 18px;
+      color: var(--ink);
+    }
+
+    .hero p {
+      font-size: 22px;
+      line-height: 1.6;
+      color: var(--muted);
+      margin: 0;
+      max-width: 900px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 18px;
+      margin: 22px 0;
+    }
+
+    .stat-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .stat-value {
+      font-size: 42px;
+      font-weight: 800;
+      color: var(--primary);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .stat-label {
+      font-size: 18px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .filters {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 22px;
+      box-shadow: var(--shadow);
+      margin-bottom: 22px;
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1fr auto;
+      gap: 14px;
+      align-items: end;
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .field label {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .input,
+    .select {
+      width: 100%;
+      border: 1px solid #d7deea;
+      border-radius: 16px;
+      background: #fff;
+      min-height: 56px;
+      padding: 14px 16px;
+      font-size: 18px;
+      color: var(--ink);
+      outline: none;
+    }
+
+    .input:focus,
+    .select:focus {
+      border-color: #91a7d7;
+      box-shadow: 0 0 0 4px rgba(111, 143, 216, 0.12);
+    }
+
+    .table-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .table-head {
+      padding: 22px 22px 14px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .table-head h2 {
+      margin: 0;
+      font-size: 34px;
+      line-height: 1;
+      color: var(--ink);
+    }
+
+    .table-wrap {
+      overflow: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    table {
+      width: 100%;
+      min-width: 1080px;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      text-align: left;
+      vertical-align: top;
+      padding: 16px 18px;
+      border-bottom: 1px solid #e8edf5;
+      font-size: 16px;
+    }
+
+    th {
+      background: #f8fafd;
+      color: #52607d;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 800;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    tr:hover td {
+      background: #fbfcff;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--pill);
+      color: var(--primary);
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-weight: 800;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .score-pill {
+      min-width: 78px;
+      justify-content: center;
+    }
+
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 14px;
+      word-break: break-all;
+      color: #51617f;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .empty,
+    .loading,
+    .error-box {
+      padding: 26px 22px;
+      font-size: 18px;
+    }
+
+    .loading {
+      color: var(--muted);
+    }
+
+    .error-box {
+      color: var(--danger);
+      font-weight: 700;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.56);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      z-index: 100;
+    }
+
+    .modal {
+      width: min(1000px, 100%);
+      max-height: 88vh;
+      overflow: auto;
+      background: #fff;
+      border-radius: 24px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25);
+    }
+
+    .modal-header {
+      padding: 22px 24px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      position: sticky;
+      top: 0;
+      background: #fff;
+      z-index: 2;
+    }
+
+    .modal-title {
+      margin: 0;
+      font-size: 28px;
+      line-height: 1.05;
+    }
+
+    .modal-body {
+      padding: 22px 24px 28px;
+    }
+
+    .report-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      margin-bottom: 22px;
+    }
+
+    .report-card {
+      background: #f8fafd;
+      border: 1px solid #e3eaf5;
+      border-radius: 18px;
+      padding: 18px;
+    }
+
+    .report-card h3 {
+      margin: 0 0 12px;
+      font-size: 18px;
+    }
+
+    .report-card p,
+    .report-card li {
+      font-size: 16px;
+      line-height: 1.6;
+      color: #334155;
+    }
+
+    .report-card ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    .json-box {
+      background: #0c244b;
+      color: #eef4ff;
+      border-radius: 18px;
+      padding: 18px;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 980px) {
+      .hero h1 {
+        font-size: 42px;
+      }
+
+      .hero p {
+        font-size: 20px;
+      }
+
+      .stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .filters {
+        grid-template-columns: 1fr;
+      }
+
+      .report-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .topbar-actions {
+        width: 100%;
+        justify-content: stretch;
+      }
+
+      .topbar-actions .btn {
+        flex: 1 1 auto;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .hero h1 {
+        font-size: 34px;
+      }
+
+      .hero p {
+        font-size: 18px;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .stat-value {
+        font-size: 36px;
+      }
+
+      .brand-title {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-left">
+      <img
+        class="logo"
+        src="assets/logo-a4p.png"
+        alt="Logo A4P"
+        onerror="this.onerror=null;this.src='assets/logo-a4p.jpg';"
+      />
+      <div class="brand">
+        <div class="brand-top">Administration A4P</div>
+        <h1 class="brand-title">CMP Admin</h1>
+      </div>
+    </div>
+
+    <div class="topbar-actions">
+      <a class="btn btn-secondary" href="index.html">Accueil CMP</a>
+      <a class="btn btn-secondary" href="hub.html">Hub A4P</a>
+      <button class="btn btn-primary" id="btn-refresh">Rafraîchir</button>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="hero">
+      <p class="eyebrow">Tableau d’administration CMP</p>
+      <h1>Voir tous les diagnostics CMP enregistrés.</h1>
+      <p>
+        Cette page lit automatiquement les résultats enregistrés dans Supabase,
+        permet de retrouver un sportif, de filtrer par profil, et d’ouvrir le rapport
+        complet pour préparer tes débriefings A4P.
+      </p>
+    </section>
+
+    <section class="stats">
+      <article class="stat-card">
+        <div class="stat-value" id="stat-total">0</div>
+        <div class="stat-label">résultats CMP</div>
+      </article>
+      <article class="stat-card">
+        <div class="stat-value" id="stat-avg">0</div>
+        <div class="stat-label">score moyen</div>
+      </article>
+      <article class="stat-card">
+        <div class="stat-value" id="stat-profiles">0</div>
+        <div class="stat-label">profils présents</div>
+      </article>
+      <article class="stat-card">
+        <div class="stat-value" id="stat-latest">—</div>
+        <div class="stat-label">dernier test</div>
+      </article>
+    </section>
+
+    <section class="filters">
+      <div class="field">
+        <label for="search-input">Recherche</label>
+        <input
+          id="search-input"
+          class="input"
+          type="text"
+          placeholder="Nom, prénom, token, profil..."
+        />
+      </div>
+
+      <div class="field">
+        <label for="profile-filter">Filtrer par profil</label>
+        <select id="profile-filter" class="select">
+          <option value="">Tous les profils</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="score-filter">Filtrer par score</label>
+        <select id="score-filter" class="select">
+          <option value="">Tous les scores</option>
+          <option value="lt50">&lt; 50</option>
+          <option value="50to69">50 à 69</option>
+          <option value="70plus">70 et +</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>&nbsp;</label>
+        <button class="btn btn-secondary" id="btn-reset-filters">Réinitialiser</button>
+      </div>
+    </section>
+
+    <section class="table-card">
+      <div class="table-head">
+        <h2>Résultats CMP</h2>
+      </div>
+
+      <div id="loading-box" class="loading">Chargement des résultats Supabase…</div>
+      <div id="error-box" class="error-box hidden"></div>
+
+      <div id="table-container" class="table-wrap hidden">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Prénom</th>
+              <th>Nom</th>
+              <th>Club / structure</th>
+              <th>Profil</th>
+              <th>Score</th>
+              <th>Token</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="results-body"></tbody>
+        </table>
+      </div>
+
+      <div id="empty-box" class="empty hidden">
+        Aucun résultat CMP trouvé.
+      </div>
+    </section>
+  </main>
+
+  <div id="modal-backdrop" class="modal-backdrop hidden">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modal-title">Rapport CMP</h2>
+        <button class="btn btn-secondary" id="btn-close-modal">Fermer</button>
+      </div>
+      <div class="modal-body" id="modal-body"></div>
+    </div>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script>
+    (function () {
+      const loadingBox = document.getElementById('loading-box');
+      const errorBox = document.getElementById('error-box');
+      const emptyBox = document.getElementById('empty-box');
+      const tableContainer = document.getElementById('table-container');
+      const resultsBody = document.getElementById('results-body');
+
+      const statTotal = document.getElementById('stat-total');
+      const statAvg = document.getElementById('stat-avg');
+      const statProfiles = document.getElementById('stat-profiles');
+      const statLatest = document.getElementById('stat-latest');
+
+      const searchInput = document.getElementById('search-input');
+      const profileFilter = document.getElementById('profile-filter');
+      const scoreFilter = document.getElementById('score-filter');
+
+      const btnRefresh = document.getElementById('btn-refresh');
+      const btnResetFilters = document.getElementById('btn-reset-filters');
+
+      const modalBackdrop = document.getElementById('modal-backdrop');
+      const modalTitle = document.getElementById('modal-title');
+      const modalBody = document.getElementById('modal-body');
+      const btnCloseModal = document.getElementById('btn-close-modal');
+
+      let allRows = [];
+      let filteredRows = [];
+
+      function getSupabaseUrl() {
+        return window.CMP_SUPABASE_URL || '';
+      }
+
+      function getSupabaseAnonKey() {
+        return window.CMP_SUPABASE_ANON_KEY || '';
+      }
+
+      function safeJsonParse(value, fallback) {
+        try {
+          if (value == null) return fallback;
+          if (typeof value === 'object') return value;
+          return JSON.parse(value);
+        } catch (error) {
+          return fallback;
+        }
+      }
+
+      function escapeHtml(str) {
+        return String(str || '').replace(/[&<>"']/g, function (char) {
+          return {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#39;'
+          }[char];
+        });
+      }
+
+      function formatDate(value) {
+        if (!value) return '—';
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) return value;
+        return date.toLocaleString('fr-FR');
+      }
+
+      function updateStats(rows) {
+        statTotal.textContent = String(rows.length);
+
+        const validScores = rows
+          .map((row) => Number(row.score_global))
+          .filter((value) => !Number.isNaN(value));
+
+        const avg = validScores.length
+          ? Math.round(validScores.reduce((sum, value) => sum + value, 0) / validScores.length)
+          : 0;
+
+        statAvg.textContent = String(avg);
+
+        const profiles = new Set(
+          rows
+            .map((row) => row.profile_label || row.profile_code || '')
+            .filter(Boolean)
+        );
+
+        statProfiles.textContent = String(profiles.size);
+
+        statLatest.textContent = rows.length ? formatDate(rows[0].created_at) : '—';
+      }
+
+      function fillProfileFilter(rows) {
+        const currentValue = profileFilter.value;
+        const profiles = Array.from(
+          new Set(
+            rows
+              .map((row) => row.profile_label || row.profile_code || '')
+              .filter(Boolean)
+          )
+        ).sort((a, b) => a.localeCompare(b, 'fr'));
+
+        profileFilter.innerHTML = '<option value="">Tous les profils</option>' +
+          profiles.map((profile) => `<option value="${escapeHtml(profile)}">${escapeHtml(profile)}</option>`).join('');
+
+        profileFilter.value = profiles.includes(currentValue) ? currentValue : '';
+      }
+
+      function matchScoreFilter(row, filterValue) {
+        const score = Number(row.score_global || 0);
+
+        if (!filterValue) return true;
+        if (filterValue === 'lt50') return score < 50;
+        if (filterValue === '50to69') return score >= 50 && score <= 69;
+        if (filterValue === '70plus') return score >= 70;
+
+        return true;
+      }
+
+      function applyFilters() {
+        const search = (searchInput.value || '').trim().toLowerCase();
+        const profile = profileFilter.value || '';
+        const score = scoreFilter.value || '';
+
+        filteredRows = allRows.filter((row) => {
+          const haystack = [
+            row.firstname,
+            row.lastname,
+            row.club_structure,
+            row.profile_label,
+            row.profile_code,
+            row.token
+          ]
+            .filter(Boolean)
+            .join(' ')
+            .toLowerCase();
+
+          const matchSearch = !search || haystack.includes(search);
+          const matchProfile =
+            !profile || (row.profile_label || row.profile_code || '') === profile;
+          const matchScore = matchScoreFilter(row, score);
+
+          return matchSearch && matchProfile && matchScore;
+        });
+
+        renderTable(filteredRows);
+        updateStats(filteredRows);
+      }
+
+      function renderTable(rows) {
+        resultsBody.innerHTML = '';
+
+        if (!rows.length) {
+          tableContainer.classList.add('hidden');
+          emptyBox.classList.remove('hidden');
+          return;
+        }
+
+        emptyBox.classList.add('hidden');
+        tableContainer.classList.remove('hidden');
+
+        rows.forEach((row) => {
+          const tr = document.createElement('tr');
+
+          tr.innerHTML = `
+            <td>${escapeHtml(formatDate(row.created_at))}</td>
+            <td>${escapeHtml(row.firstname || '—')}</td>
+            <td>${escapeHtml(row.lastname || '—')}</td>
+            <td>${escapeHtml(row.club_structure || '—')}</td>
+            <td>
+              <span class="pill">${escapeHtml(row.profile_label || row.profile_code || '—')}</span>
+            </td>
+            <td>
+              <span class="pill score-pill">${escapeHtml(row.score_global != null ? row.score_global : '—')}</span>
+            </td>
+            <td><span class="mono">${escapeHtml(row.token || '—')}</span></td>
+            <td><button class="btn btn-secondary btn-open-report">Voir rapport</button></td>
+          `;
+
+          tr.querySelector('.btn-open-report').addEventListener('click', function () {
+            openModal(row);
+          });
+
+          resultsBody.appendChild(tr);
+        });
+      }
+
+      function renderList(title, items) {
+        if (!Array.isArray(items) || !items.length) return '';
+        return `
+          <div class="report-card">
+            <h3>${escapeHtml(title)}</h3>
+            <ul>
+              ${items.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}
+            </ul>
+          </div>
+        `;
+      }
+
+      function openModal(row) {
+        const report =
+          safeJsonParse(row.full_report, null) ||
+          safeJsonParse(row.raw_data, null) ||
+          null;
+
+        const name = [row.firstname, row.lastname].filter(Boolean).join(' ') || 'Sportif';
+        modalTitle.textContent = `Rapport CMP — ${name}`;
+
+        if (!report) {
+          modalBody.innerHTML = `
+            <div class="report-card">
+              <h3>Rapport indisponible</h3>
+              <p>Aucune donnée détaillée exploitable n’a été trouvée dans <code>full_report</code> ou <code>raw_data</code>.</p>
+            </div>
+          `;
+          modalBackdrop.classList.remove('hidden');
+          return;
+        }
+
+        const dimensions = report.dimensions || {};
+        const identity = report.identity || {};
+
+        modalBody.innerHTML = `
+          <div class="report-grid">
+            <div class="report-card">
+              <h3>Identité</h3>
+              <p><strong>Prénom :</strong> ${escapeHtml(identity.prenom || row.firstname || '—')}</p>
+              <p><strong>Nom :</strong> ${escapeHtml(identity.nom || row.lastname || '—')}</p>
+              <p><strong>Club / structure :</strong> ${escapeHtml(identity.club || row.club_structure || '—')}</p>
+              <p><strong>Token :</strong> <span class="mono">${escapeHtml(row.token || '—')}</span></p>
+            </div>
+
+            <div class="report-card">
+              <h3>Synthèse</h3>
+              <p><strong>Profil :</strong> ${escapeHtml(report.profil_nom || row.profile_label || '—')}</p>
+              <p><strong>Code profil :</strong> ${escapeHtml(report.profil_code || row.profile_code || '—')}</p>
+              <p><strong>Score global :</strong> ${escapeHtml(report.score_global != null ? report.score_global : row.score_global)}</p>
+              <p><strong>Confiance :</strong> ${escapeHtml(dimensions.confiance != null ? dimensions.confiance : '—')}</p>
+              <p><strong>Régulation :</strong> ${escapeHtml(dimensions.regulation != null ? dimensions.regulation : '—')}</p>
+              <p><strong>Engagement :</strong> ${escapeHtml(dimensions.engagement != null ? dimensions.engagement : '—')}</p>
+              <p><strong>Stabilité :</strong> ${escapeHtml(dimensions.stabilite != null ? dimensions.stabilite : '—')}</p>
+            </div>
+          </div>
+
+          <div class="report-grid">
+            <div class="report-card">
+              <h3>Lecture synthétique</h3>
+              <p>${escapeHtml(report.lecture_synthetique || report.resume_court || '—')}</p>
+            </div>
+            <div class="report-card">
+              <h3>Fonctionnement mental dominant</h3>
+              <p>${escapeHtml(report.fonctionnement_mental || '—')}</p>
+            </div>
+          </div>
+
+          <div class="report-grid">
+            <div class="report-card">
+              <h3>Comportement en situation de performance</h3>
+              <p>${escapeHtml(report.comportement_performance || '—')}</p>
+            </div>
+            <div class="report-card">
+              <h3>Réaction sous pression</h3>
+              <p>${escapeHtml(report.reaction_pression || '—')}</p>
+            </div>
+          </div>
+
+          <div class="report-grid">
+            ${renderList('Forces mentales', report.forces)}
+            ${renderList('Points de vigilance', report.vigilances)}
+          </div>
+
+          <div class="report-grid">
+            ${renderList('Leviers de progression', report.leviers)}
+          </div>
+
+          <div class="report-card">
+            <h3>Donnée JSON complète</h3>
+            <div class="json-box">${escapeHtml(JSON.stringify(report, null, 2))}</div>
+          </div>
+        `;
+
+        modalBackdrop.classList.remove('hidden');
+      }
+
+      function closeModal() {
+        modalBackdrop.classList.add('hidden');
+        modalBody.innerHTML = '';
+      }
+
+      async function fetchCmpResults() {
+        const supabaseUrl = getSupabaseUrl();
+        const supabaseKey = getSupabaseAnonKey();
+
+        if (!supabaseUrl || !supabaseKey) {
+          throw new Error('Configuration Supabase CMP manquante dans js/config.js');
+        }
+
+        const query =
+          'select=id,token,module,firstname,lastname,email,club_structure,profile_code,profile_label,score_global,confiance,regulation,engagement,stabilite,full_report,raw_data,created_at' +
+          '&module=eq.CMP' +
+          '&order=created_at.desc';
+
+        const response = await fetch(`${supabaseUrl}/rest/v1/cmp_results?${query}`, {
+          method: 'GET',
+          headers: {
+            apikey: supabaseKey,
+            Authorization: `Bearer ${supabaseKey}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(errorText || 'Impossible de lire les résultats CMP');
+        }
+
+        return await response.json();
+      }
+
+      async function loadPage() {
+        loadingBox.classList.remove('hidden');
+        errorBox.classList.add('hidden');
+        tableContainer.classList.add('hidden');
+        emptyBox.classList.add('hidden');
+
+        try {
+          const rows = await fetchCmpResults();
+          allRows = Array.isArray(rows) ? rows : [];
+
+          fillProfileFilter(allRows);
+          applyFilters();
+        } catch (error) {
+          errorBox.textContent = error.message || 'Erreur inconnue';
+          errorBox.classList.remove('hidden');
+        } finally {
+          loadingBox.classList.add('hidden');
+        }
+      }
+
+      searchInput.addEventListener('input', applyFilters);
+      profileFilter.addEventListener('change', applyFilters);
+      scoreFilter.addEventListener('change', applyFilters);
+
+      btnResetFilters.addEventListener('click', function () {
+        searchInput.value = '';
+        profileFilter.value = '';
+        scoreFilter.value = '';
+        applyFilters();
+      });
+
+      btnRefresh.addEventListener('click', loadPage);
+      btnCloseModal.addEventListener('click', closeModal);
+      modalBackdrop.addEventListener('click', function (event) {
+        if (event.target === modalBackdrop) closeModal();
+      });
+
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') closeModal();
+      });
+
+      loadPage();
+    })();
+  </script>
+</body>
+</html>
